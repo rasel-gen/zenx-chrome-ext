@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables for Design System */
+/* :root {
+  --color-primary-bg: #0a0d12;
+  --color-secondary-bg: #1a1f2b;
+  --color-shading: #12151a;
+  --color-stock: #25282f;
+  --color-stock-dark: #24282e;
+  --color-paragraph: #8f949c;
+  --color-text: #ffffff;
+  --color-hint: #8e8e93;
+  --color-accent: #007aff;
+  --color-button-bg: #171a20;
+  --color-button-border: #20232b;
+  --color-icon-bg: #21252c;
+} */
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  @apply bg-primary-bg text-text;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* Custom component classes */
+@layer components {
+  .wallet-card {
+    @apply flex flex-col items-start gap-6 p-6 rounded-2xl border-[1.5px] border-stock bg-shading;
+  }
+
+  /* Generic form container card */
+  .form-card {
+    @apply flex w-[408px] p-4 flex-col items-start gap-10 rounded-2xl border border-stock;
+    /* Match translucent cards used elsewhere (e.g., overlays/buttons) */
+    background: rgba(18, 21, 26, 0.5); /* #12151A at 50% */
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  .button-pill {
+    @apply flex items-center justify-center gap-2 px-4 py-2 border transition-all hover:opacity-80 border-button-border bg-button-bg text-text;
+    border-radius: 75.833px;
+  }
+
+  .icon-circle {
+    @apply flex items-center justify-center w-10 h-10 rounded-full bg-icon-bg;
+  }
+}
+
+/* Splash screen styles - loading dots use Tailwind's animate-bounce */
