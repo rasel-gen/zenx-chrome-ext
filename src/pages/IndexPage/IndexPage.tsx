@@ -18,6 +18,10 @@ import { TransactionHistory } from "@/components/TransactionHistory/TransactionH
 import { WalletHeader } from "@/components/WalletHeader/WalletHeader"
 import { useWalletStore } from "@/stores/wallet"
 import { CryptoAsset, TransactionType, WalletData } from "@/types/wallet"
+import BTC from "data-base64:~/assets/public/bitcoin.svg"
+import ETH from "data-base64:~/assets/public/ethereum.svg"
+import TRON from "data-base64:~/assets/public/tron.svg"
+import USDT from "data-base64:~/assets/public/usdt.svg"
 import { useEffect, useMemo, useState } from "react"
 import type { FC } from "react"
 import { useNavigate } from "react-router-dom"
@@ -52,7 +56,7 @@ export const IndexPage: FC = () => {
         balanceUSD: 0,
         price: 0,
         priceChange24h: 0,
-        icon: "/bitcoin.svg"
+        icon: BTC
       },
       {
         id: "ethereum",
@@ -62,7 +66,7 @@ export const IndexPage: FC = () => {
         balanceUSD: 0,
         price: 0,
         priceChange24h: 0,
-        icon: "/ethereum.svg"
+        icon: ETH
       },
       {
         id: "usdt",
@@ -72,7 +76,7 @@ export const IndexPage: FC = () => {
         balanceUSD: 0,
         price: 0,
         priceChange24h: 0,
-        icon: "/usdt.svg"
+        icon: USDT
       },
       {
         id: "tron",
@@ -82,7 +86,7 @@ export const IndexPage: FC = () => {
         balanceUSD: 0,
         price: 0,
         priceChange24h: 0,
-        icon: "/tron.svg"
+        icon: TRON
       }
     ],
     hideZeroBalances: false
