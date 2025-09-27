@@ -222,8 +222,8 @@ export const IndexPage: FC = () => {
     }))
   }
 
-  const handleNotificationClick = () => {
-    markAllTransactionsSeen()
+  const handleNotificationClick = async () => {
+    await markAllTransactionsSeen()
     navigate("/history")
   }
 

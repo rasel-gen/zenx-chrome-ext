@@ -4,6 +4,8 @@ import { createSocket } from "@/helpers/socket"
 import { TransactionType } from "@/types/wallet"
 import { create } from "zustand"
 
+import { SecureStorage } from "@plasmohq/storage/secure"
+
 type WalletItem = { chain: string; address: string; balance: number }
 type KeyringItem = { id: string; label: string; createdAt: string }
 
@@ -37,10 +39,13 @@ type WalletState = {
   loadTransactions: () => Promise<void>
   subscribeSocket: () => void
   unsubscribeSocket: () => void
-  markAllTransactionsSeen: () => void
+  markAllTransactionsSeen: () => Promise<void>
 }
 
 let socket: ReturnType<typeof createSocket> | null = null
+
+// Initialize secure storage
+const secureStorage = new SecureStorage()
 
 const chainToId = (chain: string) => (chain === "usdt-trc20" ? "usdt" : chain)
 
@@ -76,17 +81,23 @@ export const useWalletStore = create<WalletState>((set, get) => ({
 
   bootstrap: async (opts?: { skipPreferences?: boolean }) => {
     set({ loading: true })
-    // Hydrate seen map from localStorage early
+    // Initialize secure storage with a password
     try {
-      const raw = localStorage.getItem("wallet_tx_seen")
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        if (parsed && typeof parsed === "object") {
-          set({ transactionSeenById: parsed })
-        }
+      await secureStorage.setPassword("zenx-wallet-secure-storage")
+    } catch (error) {
+      console.error("Failed to set secure storage password", error)
+    }
+    // Hydrate seen map from secure storage early
+    try {
+      const seenData = await secureStorage.get("wallet_tx_seen")
+      if (seenData && typeof seenData === "object") {
+        set({ transactionSeenById: seenData })
       }
     } catch (error) {
-      console.error("Failed to bootstrap", error)
+      console.error(
+        "Failed to load transaction seen data from secure storage",
+        error
+      )
     }
     console.log("registering")
     await api.register().catch(console.log)
@@ -375,7 +386,7 @@ export const useWalletStore = create<WalletState>((set, get) => ({
     set({ socketConnected: false })
   },
 
-  markAllTransactionsSeen: () => {
+  markAllTransactionsSeen: async () => {
     const transactions = get().transactions || []
     const newSeenMap: Record<string, boolean> = {
       ...get().transactionSeenById
@@ -390,7 +401,12 @@ export const useWalletStore = create<WalletState>((set, get) => ({
       unseenTransactionsCount: 0
     })
     try {
-      localStorage.setItem("wallet_tx_seen", JSON.stringify(newSeenMap))
-    } catch {}
+      await secureStorage.set("wallet_tx_seen", newSeenMap)
+    } catch (error) {
+      console.error(
+        "Failed to save transaction seen data to secure storage",
+        error
+      )
+    }
   }
 }))
