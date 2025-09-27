@@ -5,8 +5,16 @@
   "compilerOptions": {
     "verbatimModuleSyntax": false,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     },
-    "baseUrl": "."
+    "baseUrl": ".",
+    "types": ["node"],
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
   }
 }
