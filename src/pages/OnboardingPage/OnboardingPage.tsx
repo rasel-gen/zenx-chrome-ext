@@ -1,47 +1,45 @@
-import { Page } from "@/components/Page"
-import { api } from "@/helpers/api"
-import { useWalletStore } from "@/stores/wallet"
-import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Page } from '@/components/Page'
+import { useWalletStore } from '@/stores/wallet'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export const OnboardingPage: React.FC = () => {
   const navigate = useNavigate()
   const bootstrap = useWalletStore((s) => s.bootstrap)
-  const wallets = useWalletStore((s) => s.wallets)
+  const activeKeyringId = useWalletStore((s) => s.activeKeyringId)
+  const createKeyring = useWalletStore((s) => s.createKeyring)
+  const importKeyring = useWalletStore((s) => s.importKeyring)
   const [importOpen, setImportOpen] = useState(false)
-  const [mnemonic, setMnemonic] = useState("")
+  const [mnemonic, setMnemonic] = useState('')
   const [loading, setLoading] = useState(false)
-  const [loadingMessage, setLoadingMessage] = useState("")
+  const [loadingMessage, setLoadingMessage] = useState('')
 
-  // Redirect guard: if wallets already exist, go to dashboard
+  // Redirect guard: if an active keyring exists, go to dashboard
   useEffect(() => {
-    if ((wallets || []).length > 0) {
-      console.log("navigating to dashboard")
-      navigate("/dashboard", { replace: true })
+    if (activeKeyringId) {
+      navigate('/dashboard', { replace: true })
     }
-  }, [wallets, navigate])
+  }, [activeKeyringId, navigate])
 
   const createNew = async () => {
     if (loading) return
     setLoading(true)
-    setLoadingMessage("Creating your wallet...")
+    setLoadingMessage('Creating your wallet...')
     try {
-      await api.createSeedAndWallets()
-      setLoadingMessage("Setting up your account...")
+      await createKeyring('My Wallet')
+      setLoadingMessage('Setting up your account...')
       await bootstrap()
-      console.log("navigating to dashboard")
-      navigate("/dashboard")
+      navigate('/dashboard')
     } catch (error) {
       setLoading(false)
-      setLoadingMessage("")
-      console.error(error)
+      setLoadingMessage('')
       try {
         // @ts-ignore
         ;(window as any)?.Telegram?.WebApp?.showAlert?.(
-          "Failed to create wallet. Please try again."
+          'Failed to create wallet. Please try again.'
         )
       } catch {
-        alert("Failed to create wallet. Please try again.")
+        alert('Failed to create wallet. Please try again.')
       }
     }
   }
@@ -50,23 +48,22 @@ export const OnboardingPage: React.FC = () => {
     if (loading) return
     if (!mnemonic.trim()) return
     setLoading(true)
-    setLoadingMessage("Importing your wallet...")
+    setLoadingMessage('Importing your wallet...')
     try {
-      await api.importSeed(mnemonic.trim())
-      setLoadingMessage("Restoring your account...")
+      await importKeyring('Imported Wallet', mnemonic.trim())
+      setLoadingMessage('Restoring your account...')
       await bootstrap()
-      console.log("navigating to dashboard")
-      navigate("/dashboard")
+      navigate('/dashboard')
     } catch (error) {
       setLoading(false)
-      setLoadingMessage("")
+      setLoadingMessage('')
       try {
         // @ts-ignore
         ;(window as any)?.Telegram?.WebApp?.showAlert?.(
-          "Failed to import. Check phrase and try again."
+          'Failed to import. Check phrase and try again.'
         )
       } catch {
-        alert("Failed to import. Check phrase and try again.")
+        alert('Failed to import. Check phrase and try again.')
       }
     }
   }
@@ -79,7 +76,7 @@ export const OnboardingPage: React.FC = () => {
           {/* Full background image */}
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url(/splash.svg)" }}
+            style={{ backgroundImage: 'url(/splash.svg)' }}
           />
 
           {/* Dark overlay */}
@@ -101,13 +98,13 @@ export const OnboardingPage: React.FC = () => {
               <div className="flex gap-1">
                 <div
                   className="w-3 h-3 bg-white rounded-full animate-bounce shadow-lg"
-                  style={{ animationDelay: "0ms" }}></div>
+                  style={{ animationDelay: '0ms' }}></div>
                 <div
                   className="w-3 h-3 bg-white rounded-full animate-bounce shadow-lg"
-                  style={{ animationDelay: "150ms" }}></div>
+                  style={{ animationDelay: '150ms' }}></div>
                 <div
                   className="w-3 h-3 bg-white rounded-full animate-bounce shadow-lg"
-                  style={{ animationDelay: "300ms" }}></div>
+                  style={{ animationDelay: '300ms' }}></div>
               </div>
             </div>
           </div>
@@ -274,7 +271,7 @@ export const OnboardingPage: React.FC = () => {
                     className="flex-1 py-3 px-4 rounded-xl border border-[#25282F] bg-transparent text-neutral-400 font-medium font-['Manrope'] active:scale-[0.98] transition-transform"
                     onClick={() => {
                       setImportOpen(false)
-                      setMnemonic("")
+                      setMnemonic('')
                     }}>
                     Cancel
                   </button>

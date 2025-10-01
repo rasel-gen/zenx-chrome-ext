@@ -1,7 +1,7 @@
-import { SendAssetSheet } from "@/components/SendAssetSheet/SendAssetSheet"
-import { getAssetDisplayName } from "@/helpers/labels"
-import { CryptoAsset } from "@/types/wallet"
-import React from "react"
+import { SendAssetSheet } from '@/components/SendAssetSheet/SendAssetSheet'
+import { getAssetDisplayName, getAssetNetworkLabel } from '@/helpers/labels'
+import { CryptoAsset } from '@/types/wallet'
+import React from 'react'
 
 interface SendSheetProps {
   assets: CryptoAsset[]
@@ -22,7 +22,7 @@ export const SendSheet: React.FC<SendSheetProps> = ({ assets, onClose }) => {
           className="flex w-12 h-12 p-2.5 justify-center items-center rounded-[50px] border border-[color:var(--Radial,#252B31)]"
           style={{
             background:
-              "radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)"
+              'radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)',
           }}
           onClick={onClose}
           aria-label="Back">
@@ -33,7 +33,7 @@ export const SendSheet: React.FC<SendSheetProps> = ({ assets, onClose }) => {
             viewBox="0 0 20 20"
             fill="none"
             className="flex-shrink-0"
-            style={{ aspectRatio: "1 / 1" }}>
+            style={{ aspectRatio: '1 / 1' }}>
             <path
               d="M3.33318 10H16.6665"
               stroke="#EBEFF0"
@@ -57,7 +57,7 @@ export const SendSheet: React.FC<SendSheetProps> = ({ assets, onClose }) => {
       {/* List */}
       <div
         className="px-4 mt-6 space-y-3 overflow-y-auto"
-        style={{ maxHeight: "calc(100vh - 140px)" }}>
+        style={{ maxHeight: 'calc(100vh - 140px)' }}>
         {assets.map((a) => (
           <button
             key={a.id}
@@ -75,7 +75,7 @@ export const SendSheet: React.FC<SendSheetProps> = ({ assets, onClose }) => {
                   {getAssetDisplayName(a.id, a.symbol, a.name)}
                 </div>
                 <div className="text-neutral-400 text-sm font-medium leading-tight">
-                  {a.symbol}
+                  {getAssetNetworkLabel(a.id, a.symbol)}
                 </div>
               </div>
             </div>
@@ -100,8 +100,6 @@ export const SendSheet: React.FC<SendSheetProps> = ({ assets, onClose }) => {
         ))}
       </div>
 
-      {/* Bottom gradient */}
-      <div className="pointer-events-none fixed bottom-0 left-0 w-full h-28 bg-gradient-to-b from-zinc-950/0 to-zinc-950 backdrop-blur-[2px]" />
       {selected && (
         <SendAssetSheet asset={selected} onClose={() => setSelected(null)} />
       )}

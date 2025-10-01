@@ -1,47 +1,33 @@
-import { Splash } from "@/components/Splash/Splash"
-import { routes } from "@/navigation/routes"
-import { useWalletStore } from "@/stores/wallet"
-import { useEffect, useMemo, useState } from "react"
-import type { ComponentType } from "react"
-import {
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate
-} from "react-router-dom"
+import { Splash } from '@/components/Splash/Splash'
+import { routes } from '@/navigation/routes'
+import { useWalletStore } from '@/stores/wallet'
+import { useEffect, useMemo, useState } from 'react'
+import type { ComponentType } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 export function App() {
   const [showSplash, setShowSplash] = useState(true)
   const bootstrap = useWalletStore((s) => s.bootstrap)
-  const navigate = useNavigate()
-  const location = useLocation()
 
-  // Route guard HOC: require at least one wallet for non-root routes
+  // Route guard HOC: require an active keyring for protected routes
   const withWalletGuard = (Comp: ComponentType) =>
     function WalletGuarded() {
-      const wallets = useWalletStore((s) => s.wallets)
       const loading = useWalletStore((s) => s.loading)
+      const activeKeyringId = useWalletStore((s) => s.activeKeyringId)
       // Keep current page mounted during loading to preserve local spinners/overlays
       if (loading) return <Comp />
-      if (!wallets || wallets.length === 0) {
+      if (!activeKeyringId) {
         return <Navigate to="/" replace />
       }
       return <Comp />
     }
 
-  // Always bootstrap once on initial load.
-  // If initial route is '/', redirect to '/dashboard' when wallets already exist.
+  // Always bootstrap once on initial load. RootGate decides routing; avoid duplicate navigations here.
   useEffect(() => {
     let cancelled = false
     ;(async () => {
       try {
         await bootstrap()
-        if (!cancelled && location.pathname === "/") {
-          const hasWallets =
-            (useWalletStore.getState().wallets || []).length > 0
-          if (hasWallets) navigate("/dashboard", { replace: true })
-        }
       } finally {
         if (!cancelled) setShowSplash(false)
       }
@@ -53,21 +39,31 @@ export function App() {
 
   return (
     <div className="main-container">
-      {showSplash && (
+      {showSplash ? (
         <Splash onDone={() => setShowSplash(false)} timeoutMs={999999} />
+      ) : (
+        <Routes>
+          {routes.map((route) => {
+            // Only protect routes that actually require a wallet
+            const requiresWallet = new Set([
+              '/dashboard',
+              '/history',
+              '/transaction/:id',
+              '/settings',
+              '/settings/wallets',
+              '/settings/backup-email',
+              '/settings/passcode',
+            ]).has(route.path)
+            const Guarded = requiresWallet
+              ? withWalletGuard(route.Component)
+              : route.Component
+            return (
+              <Route key={route.path} path={route.path} Component={Guarded} />
+            )
+          })}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
       )}
-      <Routes>
-        {routes.map((route) => {
-          const Guarded =
-            route.path === "/"
-              ? route.Component
-              : withWalletGuard(route.Component)
-          return (
-            <Route key={route.path} path={route.path} Component={Guarded} />
-          )
-        })}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
     </div>
   )
 }

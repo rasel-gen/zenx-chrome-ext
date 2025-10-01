@@ -1,13 +1,13 @@
-import { BackButton } from "@/components/BackButton"
-import { PasscodePromptModal } from "@/components/PasscodePromptModal/PasscodePromptModal"
-import { getMinSendForSymbol } from "@/config/minSend"
-import { api } from "@/helpers/api"
-import { symbolToChain } from "@/helpers/chain"
-import { getAssetDisplayName, getSymbolWithNetwork } from "@/helpers/labels"
-import { useWalletStore } from "@/stores/wallet"
-import { CryptoAsset } from "@/types/wallet"
-import React, { useEffect, useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
+// chain resolution handled by asset.id for accuracy across networks
+import { BackButton } from '@/components/BackButton'
+import { PasscodePromptModal } from '@/components/PasscodePromptModal/PasscodePromptModal'
+import { getMinSendForSymbol } from '@/config/minSend'
+import { api, publicApi } from '@/helpers/api'
+import { getAssetDisplayName, getSymbolWithNetwork } from '@/helpers/labels'
+import { useWalletStore } from '@/stores/wallet'
+import { CryptoAsset } from '@/types/wallet'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 interface SendAssetSheetProps {
   asset: CryptoAsset
@@ -16,12 +16,12 @@ interface SendAssetSheetProps {
 
 export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
   asset,
-  onClose
+  onClose,
 }) => {
   const navigate = useNavigate()
   const wallets = useWalletStore((s) => s.wallets)
-  const [to, setTo] = useState("")
-  const [amt, setAmt] = useState("")
+  const [to, setTo] = useState('')
+  const [amt, setAmt] = useState('')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
   const [ok, setOk] = useState<string | null>(null)
@@ -49,7 +49,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
   const trxBalance = useMemo(() => {
     try {
       return Number(
-        (wallets || []).find((w) => w.chain === "tron")?.balance ?? 0
+        (wallets || []).find((w) => w.chain === 'tron')?.balance ?? 0
       )
     } catch {
       return 0
@@ -57,13 +57,35 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
   }, [wallets])
 
   const isUSDTTRC20 = useMemo(
-    () => symbolToChain(asset.symbol) === "usdt-trc20",
-    [asset.symbol]
+    () => asset.id.toLowerCase() === 'usdt-trc20',
+    [asset.id]
   )
+  const isXrp = useMemo(() => asset.id.toLowerCase() === 'xrp', [asset.id])
+  const [xrpInfo, setXrpInfo] = useState<{
+    reserveBaseXrp: number
+    reserveIncXrp: number
+    ownerCount: number
+    balanceXrp: number
+    minReserveXrp: number
+    feeXrp: number
+    spendableXrp: number
+  } | null>(null)
+  useEffect(() => {
+    ;(async () => {
+      if (!isXrp) return
+      try {
+        const addr = (wallets || []).find((w) => w.chain === 'xrp')?.address
+        const info = await publicApi.xrpInfo(addr)
+        setXrpInfo(info as any)
+      } catch {
+        setXrpInfo(null)
+      }
+    })()
+  }, [isXrp, wallets])
 
   // Validation logic
   const validation = useMemo(() => {
-    const chain = symbolToChain(asset.symbol)
+    const chain = asset.id.toLowerCase() as any
     const amount = parseFloat(amt)
     const hasValidAddress = to.trim().length > 0
     const minRequired = getMinSendForSymbol(asset.symbol)
@@ -78,8 +100,10 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
     const hasZeroBalance = asset.balance === 0
     const hasInvalidNumber =
       amt.length > 0 && (isNaN(amount) || amount <= 0 || !isFinite(amount))
-    const needsTrxForFees = chain === "usdt-trc20"
+    const needsTrxForFees = chain === 'usdt-trc20'
     const hasTrxForFees = !needsTrxForFees || trxBalance > 0
+    const exceedsSpendable =
+      isXrp && xrpInfo ? amount > Number(xrpInfo.spendableXrp || 0) : false
 
     return {
       isValid:
@@ -87,7 +111,8 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
         meetsMin &&
         !hasInsufficientBalance &&
         !hasZeroBalance &&
-        hasTrxForFees,
+        hasTrxForFees &&
+        !exceedsSpendable,
       hasValidAddress,
       hasValidAmount,
       meetsMin,
@@ -97,11 +122,22 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
       hasInvalidNumber,
       amount,
       needsTrxForFees,
-      hasTrxForFees
+      hasTrxForFees,
+      isXrp,
+      exceedsSpendable,
     }
-  }, [to, amt, asset.balance, asset.symbol, trxBalance])
+  }, [to, amt, asset.balance, asset.symbol, trxBalance, isXrp, xrpInfo])
 
   const handleMaxClick = () => {
+    if (isXrp && xrpInfo) {
+      const max = Math.max(0, Number(xrpInfo.spendableXrp || 0))
+      const maxStr = max
+        .toFixed(6)
+        .replace(/\.0+$/, '')
+        .replace(/\.(\d*?)0+$/, '.$1')
+      if (max > 0) setAmt(maxStr)
+      return
+    }
     if (asset.balance > 0) {
       setAmt(asset.balance.toString())
     }
@@ -111,7 +147,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
     const value = e.target.value
 
     // Allow empty string
-    if (value === "") {
+    if (value === '') {
       setAmt(value)
       return
     }
@@ -120,12 +156,12 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
     // Prevent multiple decimal points and invalid patterns
     if (/^\d*\.?\d*$/.test(value)) {
       // Prevent multiple zeros at start (like 00.1)
-      if (value.startsWith("00")) {
+      if (value.startsWith('00')) {
         return
       }
 
       // Prevent starting with decimal point followed by more than 8 decimal places
-      const decimalParts = value.split(".")
+      const decimalParts = value.split('.')
       if (decimalParts.length === 2 && decimalParts[1].length > 8) {
         return
       }
@@ -145,7 +181,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
           <BackButton
             onClick={() => {
               onClose()
-              navigate("/dashboard")
+              navigate('/dashboard')
             }}
           />
           <div className="text-gray-100 text-base font-bold">
@@ -179,10 +215,10 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
                   Time
                 </div>
                 <div className="text-gray-100 text-sm font-medium leading-tight">
-                  {success.when.toLocaleDateString()}{" "}
+                  {success.when.toLocaleDateString()}{' '}
                   {success.when.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit"
+                    hour: '2-digit',
+                    minute: '2-digit',
                   })}
                 </div>
               </div>
@@ -241,7 +277,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
             className="w-full h-14 p-3 bg-blue-500 rounded-2xl inline-flex justify-center items-center"
             onClick={() => {
               onClose()
-              navigate("/dashboard")
+              navigate('/dashboard')
             }}>
             <div className="text-gray-100 text-base font-bold leading-snug">
               Back to Home
@@ -316,8 +352,8 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
                       <input
                         className={`flex-1 h-14 px-4 py-3.5 bg-zinc-950 rounded-2xl outline outline-1 outline-offset-[-1px] text-gray-100 placeholder-neutral-500 ${
                           to.length > 0 && !validation.hasValidAddress
-                            ? "outline-red-500"
-                            : "outline-zinc-800 focus:outline-blue-500"
+                            ? 'outline-red-500'
+                            : 'outline-zinc-800 focus:outline-blue-500'
                         }`}
                         placeholder="Paste recipient address"
                         value={to}
@@ -369,8 +405,8 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
                   className={`w-full h-14 px-4 py-3.5 bg-zinc-950 rounded-2xl outline outline-1 outline-offset-[-1px] flex items-center gap-3 ${
                     validation.hasInvalidNumber ||
                     validation.hasInsufficientBalance
-                      ? "outline-red-500"
-                      : "outline-zinc-800 focus-within:outline-blue-500"
+                      ? 'outline-red-500'
+                      : 'outline-zinc-800 focus-within:outline-blue-500'
                   }`}>
                   <input
                     type="text"
@@ -416,7 +452,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
               )}
               {validation.hasInsufficientBalance && (
                 <div className="w-full text-red-400 text-sm">
-                  Insufficient balance. Available: {asset.balance.toFixed(6)}{" "}
+                  Insufficient balance. Available: {asset.balance.toFixed(6)}{' '}
                   {asset.symbol}
                 </div>
               )}
@@ -429,6 +465,17 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
                 <div className="w-full text-red-400 text-sm">
                   TRX balance required to pay network fees for USDT (TRC20).
                   Current TRX: {trxBalance.toFixed(6)}
+                </div>
+              )}
+              {isXrp && xrpInfo && (
+                <div className="w-full text-amber-400 text-sm">
+                  Reserve: {xrpInfo.minReserveXrp.toFixed(6)} XRP • Spendable:{' '}
+                  {xrpInfo.spendableXrp.toFixed(6)} XRP
+                </div>
+              )}
+              {isXrp && xrpInfo && validation.exceedsSpendable && (
+                <div className="w-full text-red-400 text-sm">
+                  Maximum spendable is {xrpInfo.spendableXrp.toFixed(6)} XRP
                 </div>
               )}
               {err && <div className="w-full text-red-400 text-sm">{err}</div>}
@@ -453,38 +500,40 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
                   setOk(null)
                   setBusy(true)
                   try {
-                    const chain = symbolToChain(asset.symbol)
-                    const cleanedTo = to.replace(/\s+/g, "").trim()
+                    const chain = asset.id.toLowerCase() as any
+                    const cleanedTo = to.replace(/\s+/g, '').trim()
                     if (passcodeEnabled) {
                       setPassError(null)
                       setShowPassModal(true)
                       setBusy(false)
                       return
                     }
-                    const res = await useWalletStore.getState().sendTransfer({
-                      chain,
-                      toAddress: cleanedTo,
-                      amount: amt.trim()
-                    })
-                    const txid = (res as any)?.txid || ""
-                    const from = (res as any)?.from || ""
-                    setOk(`Sent: ${txid || "Transaction submitted"}`)
+                    const res = await useWalletStore
+                      .getState()
+                      .sendTransfer({
+                        chain,
+                        toAddress: cleanedTo,
+                        amount: amt.trim(),
+                      })
+                    const txid = (res as any)?.txid || ''
+                    const from = (res as any)?.from || ''
+                    setOk(`Sent: ${txid || 'Transaction submitted'}`)
                     setSuccess({
                       txid,
                       from,
                       to,
                       amount: amt,
                       symbol: asset.symbol,
-                      when: new Date()
+                      when: new Date(),
                     })
                   } catch (e: any) {
-                    setErr(e?.message || "Failed to send")
+                    setErr(e?.message || 'Failed to send')
                   } finally {
                     setBusy(false)
                   }
                 }}>
                 <div className="text-gray-100 text-base font-bold leading-snug">
-                  {busy ? "Sending..." : "Send Now"}
+                  {busy ? 'Sending...' : 'Send Now'}
                 </div>
               </button>
             </div>
@@ -502,29 +551,31 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
           onSubmit={async ({ currentPasscode }) => {
             try {
               setBusy(true)
-              const chain = symbolToChain(asset.symbol)
-              const cleanedTo = to.replace(/\s+/g, "").trim()
-              const res = await useWalletStore.getState().sendTransfer({
-                chain,
-                toAddress: cleanedTo,
-                amount: amt.trim(),
-                passcode: currentPasscode
-              })
-              const txid = (res as any)?.txid || ""
-              const from = (res as any)?.from || ""
-              setOk(`Sent: ${txid || "Transaction submitted"}`)
+              const chain = asset.id.toLowerCase() as any
+              const cleanedTo = to.replace(/\s+/g, '').trim()
+              const res = await useWalletStore
+                .getState()
+                .sendTransfer({
+                  chain,
+                  toAddress: cleanedTo,
+                  amount: amt.trim(),
+                  passcode: currentPasscode,
+                })
+              const txid = (res as any)?.txid || ''
+              const from = (res as any)?.from || ''
+              setOk(`Sent: ${txid || 'Transaction submitted'}`)
               setSuccess({
                 txid,
                 from,
                 to,
                 amount: amt,
                 symbol: asset.symbol,
-                when: new Date()
+                when: new Date(),
               })
               setShowPassModal(false)
               setPassError(null)
             } catch (e: any) {
-              setPassError(String(e?.message || "Invalid passcode"))
+              setPassError(String(e?.message || 'Invalid passcode'))
             } finally {
               setBusy(false)
             }

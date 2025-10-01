@@ -1,30 +1,24 @@
-/**
- * IndexPage - Main Wallet Dashboard
- *
- * Usage:
- * - Main entry point for the ZenX Wallet interface
- * - Displays wallet balance, assets, and recent transactions
- * - Handles all wallet interactions and state management
- * - Responsive design matching the provided mockup
- */
-
-import { AssetList } from "@/components/AssetList/AssetList"
-import { BalanceDisplay } from "@/components/BalanceDisplay/BalanceDisplay"
-import { FloatingMenu } from "@/components/FloatingMenu/FloatingMenu"
-import { Page } from "@/components/Page"
-import { ReceiveSheet } from "@/components/ReceiveSheet/ReceiveSheet"
-import { SendSheet } from "@/components/SendSheet/SendSheet"
-import { TransactionHistory } from "@/components/TransactionHistory/TransactionHistory"
-import { WalletHeader } from "@/components/WalletHeader/WalletHeader"
-import { useWalletStore } from "@/stores/wallet"
-import { CryptoAsset, TransactionType, WalletData } from "@/types/wallet"
-import BTC from "data-base64:~/assets/public/bitcoin.svg"
-import ETH from "data-base64:~/assets/public/ethereum.svg"
-import TRON from "data-base64:~/assets/public/tron.svg"
-import USDT from "data-base64:~/assets/public/usdt.svg"
-import { useEffect, useMemo, useState } from "react"
-import type { FC } from "react"
-import { useNavigate } from "react-router-dom"
+import { AssetList } from '@/components/AssetList/AssetList'
+import { BalanceDisplay } from '@/components/BalanceDisplay/BalanceDisplay'
+import { FloatingMenu } from '@/components/FloatingMenu/FloatingMenu'
+import { Page } from '@/components/Page'
+import { ReceiveSheet } from '@/components/ReceiveSheet/ReceiveSheet'
+import { SendSheet } from '@/components/SendSheet/SendSheet'
+import { TransactionHistory } from '@/components/TransactionHistory/TransactionHistory'
+import { WalletHeader } from '@/components/WalletHeader/WalletHeader'
+import { useWalletStore } from '@/stores/wallet'
+import { CryptoAsset, TransactionType, WalletData } from '@/types/wallet'
+import BTC from 'data-base64:../../../assets/public/bitcoin.svg'
+import BSC from 'data-base64:../../../assets/public/bsc.svg'
+import ETH from 'data-base64:../../../assets/public/ethereum.svg'
+import SOLANA from 'data-base64:../../../assets/public/solana.svg'
+import TRON from 'data-base64:../../../assets/public/tron.svg'
+import USDC from 'data-base64:../../../assets/public/usdc.svg'
+import USDT from 'data-base64:../../../assets/public/usdt.svg'
+import XRP from 'data-base64:../../../assets/public/xrp.svg'
+import { useEffect, useMemo, useState } from 'react'
+import type { FC } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // Note: These will be implemented when backend is ready
 // import { api } from '@/helpers/api';
@@ -34,12 +28,11 @@ export const IndexPage: FC = () => {
   const navigate = useNavigate()
 
   // Create user data from Telegram initData or fallback to mock data
-  // Mock user data for React Native (no Telegram integration)
   const userData = useMemo(
     () => ({
-      name: "John Smith",
-      username: "john_smith",
-      avatar: undefined
+      name: 'John Smith',
+      username: 'john_smith',
+      avatar: undefined,
     }),
     []
   )
@@ -49,54 +42,124 @@ export const IndexPage: FC = () => {
     totalBalanceUSD: 0,
     assets: [
       {
-        id: "bitcoin",
-        name: "Bitcoin",
-        symbol: "BTC",
+        id: 'bitcoin',
+        name: 'Bitcoin',
+        symbol: 'BTC',
         balance: 0,
         balanceUSD: 0,
         price: 0,
         priceChange24h: 0,
-        icon: BTC
+        icon: BTC,
       },
       {
-        id: "ethereum",
-        name: "Ethereum",
-        symbol: "ETH",
+        id: 'ethereum',
+        name: 'Ethereum',
+        symbol: 'ETH',
         balance: 0,
         balanceUSD: 0,
         price: 0,
         priceChange24h: 0,
-        icon: ETH
+        icon: ETH,
       },
       {
-        id: "usdt",
-        name: "Tether",
-        symbol: "USDT",
+        id: 'usdt-trc20',
+        name: 'Tether (TRC20)',
+        symbol: 'USDT',
         balance: 0,
         balanceUSD: 0,
         price: 0,
         priceChange24h: 0,
-        icon: USDT
+        icon: USDT,
       },
       {
-        id: "tron",
-        name: "Tron",
-        symbol: "TRX",
+        id: 'usdc-erc20',
+        name: 'USD Coin (ERC20)',
+        symbol: 'USDC',
         balance: 0,
         balanceUSD: 0,
         price: 0,
         priceChange24h: 0,
-        icon: TRON
-      }
+        icon: USDC,
+      },
+      {
+        id: 'tron',
+        name: 'Tron',
+        symbol: 'TRX',
+        balance: 0,
+        balanceUSD: 0,
+        price: 0,
+        priceChange24h: 0,
+        icon: TRON,
+      },
+      {
+        id: 'solana',
+        name: 'Solana',
+        symbol: 'SOL',
+        balance: 0,
+        balanceUSD: 0,
+        price: 0,
+        priceChange24h: 0,
+        icon: SOLANA,
+      },
+      {
+        id: 'xrp',
+        name: 'XRP',
+        symbol: 'XRP',
+        balance: 0,
+        balanceUSD: 0,
+        price: 0,
+        priceChange24h: 0,
+        icon: XRP,
+      },
+      {
+        id: 'usdt-erc20',
+        name: 'Tether (ERC20)',
+        symbol: 'USDT',
+        balance: 0,
+        balanceUSD: 0,
+        price: 0,
+        priceChange24h: 0,
+        icon: USDT,
+      },
+      {
+        id: 'usdt-bep20',
+        name: 'Tether (BEP20)',
+        symbol: 'USDT',
+        balance: 0,
+        balanceUSD: 0,
+        price: 0,
+        priceChange24h: 0,
+        icon: USDT,
+      },
+      {
+        id: 'usdc-bep20',
+        name: 'USD Coin (BEP20)',
+        symbol: 'USDC',
+        balance: 0,
+        balanceUSD: 0,
+        price: 0,
+        priceChange24h: 0,
+        icon: USDC,
+      },
+      {
+        id: 'bsc',
+        name: 'BNB Smart Chain',
+        symbol: 'BNB',
+        balance: 0,
+        balanceUSD: 0,
+        price: 0,
+        priceChange24h: 0,
+        icon: BSC,
+      },
     ],
-    hideZeroBalances: false
+    hideZeroBalances: false,
   }))
 
   // Update user data when Telegram initData changes
   useEffect(() => {
     setWalletData((prev) => ({
       ...prev,
-      user: userData
+      user: userData,
     }))
   }, [userData])
 
@@ -109,7 +172,9 @@ export const IndexPage: FC = () => {
   const storeLoading = useWalletStore((s) => s.loading)
   const subscribeSocket = useWalletStore((s) => s.subscribeSocket)
   const bootstrap = useWalletStore((s) => s.bootstrap)
+  const createKeyring = useWalletStore((s) => s.createKeyring)
   const storeWallets = useWalletStore((s) => s.wallets)
+  const storeKeyrings = useWalletStore((s) => s.keyrings)
   const storePrices = useWalletStore((s) => s.prices)
   const storeTransactions = useWalletStore((s) => s.transactions)
   const unseenCount = useWalletStore((s) => s.unseenTransactionsCount)
@@ -120,7 +185,7 @@ export const IndexPage: FC = () => {
 
   // Subscribe to socket once mounted
   useEffect(() => {
-    // subscribeSocket()
+    subscribeSocket()
     return () => {
       /* keep socket alive globally; no-op */
     }
@@ -135,24 +200,54 @@ export const IndexPage: FC = () => {
   // When store wallets or prices change, propagate address and balances into local asset list for sheets
   useEffect(() => {
     if (!storeWallets || storeWallets.length === 0) return
-    const chainToId = (chain: string) =>
-      chain === "usdt-trc20" ? "usdt" : chain
+    // Identity mapping for addresses; keep variants distinct
     const addrById = new Map<string, string>()
     const balById = new Map<string, number>()
     storeWallets.forEach((w) => {
-      const id = chainToId(w.chain)
+      const id = String(w.chain || '').toLowerCase()
       addrById.set(id, w.address)
       balById.set(id, Number(w.balance || 0))
     })
+    // Fallbacks for base and token variants to base chain addresses (receive address only)
+    const ethAddr = addrById.get('ethereum')
+    const bscAddr = addrById.get('bsc')
+    const tronAddr = addrById.get('tron')
+    // If no explicit BSC wallet returned, reuse ETH address (EVM-compatible)
+    if (!bscAddr && ethAddr) {
+      addrById.set('bsc', ethAddr)
+    }
+    // ERC20 variants reuse ETH address
+    if (ethAddr) {
+      addrById.set('usdt-erc20', ethAddr)
+      addrById.set('usdc-erc20', ethAddr)
+    }
+    // BEP20 variants reuse BSC address, or fallback to ETH if BSC missing
+    const bscOrEth = addrById.get('bsc') || ethAddr
+    if (bscOrEth) {
+      addrById.set('usdt-bep20', bscOrEth)
+      addrById.set('usdc-bep20', bscOrEth)
+    }
+    // TRC20 variants reuse TRON address
+    if (tronAddr) {
+      addrById.set('usdt-trc20', tronAddr)
+    }
+    const priceId = (id: string): string => {
+      const low = String(id || '').toLowerCase()
+      if (low.startsWith('usdt-')) return 'usdt'
+      if (low.startsWith('usdc-')) return 'usdc'
+      return id
+    }
     setWalletData((prev) => ({
       ...prev,
       assets: prev.assets.map((a) => {
-        const price = (storePrices as any)[a.id] || 0
-        const change = (changes24h as any)[a.id] ?? a.priceChange24h ?? 0
+        const pid = priceId(a.id)
+        const price = (storePrices as any)[pid] || 0
+        const change = (changes24h as any)[pid] ?? a.priceChange24h ?? 0
         const balance = balById.has(a.id)
           ? Number(balById.get(a.id))
           : a.balance || 0
-        const address = addrById.get(a.id) || a.address
+        const address =
+          addrById.get(String(a.id || '').toLowerCase()) || a.address
         const balanceUSD = Number(balance) * Number(price || 0)
         return {
           ...a,
@@ -160,9 +255,9 @@ export const IndexPage: FC = () => {
           balance,
           balanceUSD,
           price: price || a.price || 0,
-          priceChange24h: Number(change)
+          priceChange24h: Number(change),
         }
-      })
+      }),
     }))
   }, [storeWallets, storePrices, changes24h])
 
@@ -193,21 +288,21 @@ export const IndexPage: FC = () => {
   }
 
   const handleHistory = () => {
-    navigate("/history")
+    navigate('/history')
   }
 
   const handleHome = () => {
-    navigate("/dashboard")
-    window.scrollTo({ top: 0, behavior: "smooth" })
+    navigate('/dashboard')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleAssetClick = (asset: CryptoAsset) => {
-    console.log("Asset clicked:", asset)
+    console.log('Asset clicked:', asset)
     // TODO: Navigate to asset detail page
   }
 
   const handleTransactionClick = (transaction: TransactionType) => {
-    console.log("Transaction clicked:", transaction)
+    console.log('Transaction clicked:', transaction)
     // TODO: Navigate to transaction detail page
   }
 
@@ -218,13 +313,13 @@ export const IndexPage: FC = () => {
   const handleToggleZeroBalances = () => {
     setWalletData((prev) => ({
       ...prev,
-      hideZeroBalances: !prev.hideZeroBalances
+      hideZeroBalances: !prev.hideZeroBalances,
     }))
   }
 
-  const handleNotificationClick = async () => {
-    await markAllTransactionsSeen()
-    navigate("/history")
+  const handleNotificationClick = () => {
+    markAllTransactionsSeen()
+    navigate('/history')
   }
 
   const handleRefresh = async () => {
@@ -240,14 +335,14 @@ export const IndexPage: FC = () => {
         setIsRefreshing(false)
       }, 800) // Keep spinner for at least 800ms for visual feedback
     } catch (error) {
-      console.error("Refresh failed:", error)
+      console.error('Refresh failed:', error)
       setIsRefreshing(false)
     }
   }
 
   return (
     <Page back={false}>
-      <div style={{ background: "#0A0D12", minHeight: "100vh" }}>
+      <div style={{ background: '#0A0D12', minHeight: '100vh' }}>
         <div className="px-3 sm:px-5 pb-28">
           <div className="flex items-center justify-between">
             <WalletHeader
@@ -256,18 +351,18 @@ export const IndexPage: FC = () => {
               notificationCount={unseenCount}
             />
             <button
-              aria-label={isRefreshing ? "Refreshing..." : "Refresh"}
-              title={isRefreshing ? "Refreshing..." : "Refresh"}
+              aria-label={isRefreshing ? 'Refreshing...' : 'Refresh'}
+              title={isRefreshing ? 'Refreshing...' : 'Refresh'}
               onClick={handleRefresh}
               disabled={isRefreshing}
               className={`ml-2 w-10 h-10 flex items-center justify-center rounded-full border border-zinc-700 transition-all duration-200 ${
                 isRefreshing
-                  ? "opacity-70 cursor-not-allowed"
-                  : "hover:bg-zinc-800 active:opacity-80 cursor-pointer"
+                  ? 'opacity-70 cursor-not-allowed'
+                  : 'hover:bg-zinc-800 active:opacity-80 cursor-pointer'
               }`}
               style={{
                 background:
-                  "radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)"
+                  'radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)',
               }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -279,8 +374,8 @@ export const IndexPage: FC = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className={isRefreshing ? "animate-spin" : ""}
-                style={{ transformOrigin: "center" }}>
+                className={isRefreshing ? 'animate-spin' : ''}
+                style={{ transformOrigin: 'center' }}>
                 <path d="M21 2v6h-6" />
                 <path d="M3 22v-6h6" />
                 <path d="M3.51 9a9 9 0 0 1 14.85-3.36L21 8" />
@@ -301,24 +396,53 @@ export const IndexPage: FC = () => {
             loading={isBalanceLoading}
           />
 
-          <AssetList
-            assets={walletData.assets}
-            hideZeroBalances={walletData.hideZeroBalances}
-            onAssetClick={handleAssetClick}
-            onToggleZeroBalances={handleToggleZeroBalances}
-          />
+          {storeKeyrings.length === 0 ? (
+            <div className="px-4 py-10 text-center text-neutral-300">
+              <div className="text-lg font-semibold mb-3">
+                Set up your wallet
+              </div>
+              <div className="text-sm opacity-80 mb-6">
+                Create a new wallet or import an existing one to get started.
+              </div>
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  className="px-4 py-2 rounded-xl bg-blue-500 text-white text-sm font-semibold"
+                  onClick={async () => {
+                    try {
+                      await createKeyring('My Wallet')
+                    } catch {}
+                  }}>
+                  Create
+                </button>
+                <button
+                  className="px-4 py-2 rounded-xl bg-neutral-800 text-white text-sm font-semibold border border-zinc-700"
+                  onClick={() => {
+                    navigate('/settings')
+                  }}>
+                  Import
+                </button>
+              </div>
+            </div>
+          ) : (
+            <AssetList
+              assets={walletData.assets}
+              hideZeroBalances={walletData.hideZeroBalances}
+              onAssetClick={handleAssetClick}
+              onToggleZeroBalances={handleToggleZeroBalances}
+            />
+          )}
 
           <TransactionHistory
             transactions={recentTransactions}
             onTransactionClick={handleTransactionClick}
-            onSeeAllClick={() => navigate("/history")}
+            onSeeAllClick={() => navigate('/history')}
           />
         </div>
         <FloatingMenu
           onHome={handleHome}
           onSwap={handleSend}
           onReceive={handleReceive}
-          onSettings={() => navigate("/settings")}
+          onSettings={() => navigate('/settings')}
         />
         {sendOpen && (
           <SendSheet
@@ -343,8 +467,8 @@ export const IndexPage: FC = () => {
                 <div
                   className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-blue-400/50 rounded-full animate-spin"
                   style={{
-                    animationDirection: "reverse",
-                    animationDuration: "1.5s"
+                    animationDirection: 'reverse',
+                    animationDuration: '1.5s',
                   }}></div>
               </div>
 

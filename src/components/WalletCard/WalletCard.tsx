@@ -1,15 +1,4 @@
-/**
- * WalletCard Component
- *
- * Usage:
- * - Displays individual wallet (keyring) information in a card format
- * - Shows active status, name, and action buttons
- * - Handles Set Active, Rename, and Export actions
- * - Maintains consistent design with app's dark theme
- */
-
-import { useWalletStore } from "@/stores/wallet"
-import React from "react"
+import React from 'react'
 
 interface WalletCardProps {
   keyring: {
@@ -28,7 +17,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
   isActive,
   onSetActive,
   onRename,
-  onExport
+  onExport,
 }) => {
   return (
     <div className="rounded-2xl border border-[#25282F] bg-[#12151A] p-4">
@@ -36,7 +25,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
         <div className="flex items-center gap-3">
           <div
             className="w-4 h-4 rounded-full"
-            style={{ background: isActive ? "#3B82F6" : "#6B7280" }}
+            style={{ background: isActive ? '#3B82F6' : '#6B7280' }}
           />
           <div className="flex flex-col">
             <span className="text-[#F0F3F7] text-base font-medium font-['Manrope']">

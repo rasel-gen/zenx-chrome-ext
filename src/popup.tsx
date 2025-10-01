@@ -1,12 +1,12 @@
-import { HashRouter } from "react-router-dom"
+import { HashRouter } from 'react-router-dom'
 
-import "./css/index.css"
+import './css/index.css'
 
-import { App } from "./main"
+import { App } from './main'
 
 function IndexPopup() {
   return (
-    <div className="w-96">
+    <div className="w-96 min-h-[600px]">
       <HashRouter>
         <App />
       </HashRouter>

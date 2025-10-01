@@ -1,6 +1,6 @@
 // @ts-ignore
-import videoData from "data-url:~/assets/public/splash.mp4"
-import React, { useEffect } from "react"
+import videoData from 'data-url:~/assets/public/splash.mp4'
+import React, { useEffect } from 'react'
 
 interface SplashProps {
   onDone: () => void
@@ -14,7 +14,7 @@ export const Splash: React.FC<SplashProps> = ({ onDone, timeoutMs = 1500 }) => {
   }, [onDone, timeoutMs])
 
   return (
-    <div className="fixed inset-0 z-[100] overflow-hidden ">
+    <div className="fixed inset-0 z-[100] overflow-hidden h-full">
       <video
         className="absolute inset-0 w-full h-full object-cover"
         src={videoData}

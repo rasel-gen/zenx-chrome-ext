@@ -1,6 +1,7 @@
-import { App } from "@/components/App"
-import { ErrorBoundary } from "@/components/ErrorBoundary"
-import { HashRouter } from "react-router-dom"
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { HashRouter } from 'react-router-dom'
+
+import { App } from '../main'
 
 function ErrorBoundaryError({ error }: { error: unknown }) {
   return (
@@ -10,7 +11,7 @@ function ErrorBoundaryError({ error }: { error: unknown }) {
         <code>
           {error instanceof Error
             ? error.message
-            : typeof error === "string"
+            : typeof error === 'string'
               ? error
               : JSON.stringify(error)}
         </code>

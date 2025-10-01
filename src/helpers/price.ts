@@ -19,45 +19,44 @@ const DEFAULT_ID_MAP: Record<string, string> = {
   ethereum: 'ethereum',
   tron: 'tron',
   usdt: 'tether',
-};
+  bsc: 'binancecoin',
+  usdc: 'usd-coin',
+  solana: 'solana',
+  xrp: 'ripple',
+}
 
 export async function fetchPrices(
   assetIds: string[],
   baseCurrency: string,
   customMap?: Record<string, string>
 ): Promise<Record<string, number>> {
-  const idMap = { ...DEFAULT_ID_MAP, ...(customMap || {}) };
+  const idMap = { ...DEFAULT_ID_MAP, ...(customMap || {}) }
   const geckoIds = Array.from(
-    new Set(
-      assetIds
-        .map((id) => idMap[id] || id)
-        .filter(Boolean)
-    )
-  );
-  if (geckoIds.length === 0) return {};
+    new Set(assetIds.map((id) => idMap[id] || id).filter(Boolean))
+  )
+  if (geckoIds.length === 0) return {}
 
-  const vs = String(baseCurrency || 'USD').toLowerCase();
+  const vs = String(baseCurrency || 'USD').toLowerCase()
   const url = `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(
     geckoIds.join(',')
-  )}&vs_currencies=${encodeURIComponent(vs)}`;
+  )}&vs_currencies=${encodeURIComponent(vs)}`
 
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Price API ${res.status}`);
-    const data = (await res.json()) as Record<string, Record<string, number>>;
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`Price API ${res.status}`)
+    const data = (await res.json()) as Record<string, Record<string, number>>
     // Build result keyed by our input asset ids
-    const out: Record<string, number> = {};
+    const out: Record<string, number> = {}
     for (const assetId of assetIds) {
-      const gid = idMap[assetId] || assetId;
-      const price = data[gid]?.[vs];
-      if (typeof price === 'number') out[assetId] = price;
+      const gid = idMap[assetId] || assetId
+      const price = data[gid]?.[vs]
+      if (typeof price === 'number') out[assetId] = price
     }
-    return out;
+    return out
   } catch {
-    return {};
+    return {}
   }
 }
-
 
 /**
  * Fetch current prices and 24h change percentage for given assets.
@@ -68,33 +67,36 @@ export async function fetchPricesAndChange(
   assetIds: string[],
   baseCurrency: string,
   customMap?: Record<string, string>
-): Promise<{ prices: Record<string, number>; changes: Record<string, number> }> {
-  const idMap = { ...DEFAULT_ID_MAP, ...(customMap || {}) };
-  const geckoIds = Array.from(new Set(assetIds.map((id) => idMap[id] || id).filter(Boolean)));
-  if (geckoIds.length === 0) return { prices: {}, changes: {} };
+): Promise<{
+  prices: Record<string, number>
+  changes: Record<string, number>
+}> {
+  const idMap = { ...DEFAULT_ID_MAP, ...(customMap || {}) }
+  const geckoIds = Array.from(
+    new Set(assetIds.map((id) => idMap[id] || id).filter(Boolean))
+  )
+  if (geckoIds.length === 0) return { prices: {}, changes: {} }
 
-  const vs = String(baseCurrency || 'USD').toLowerCase();
+  const vs = String(baseCurrency || 'USD').toLowerCase()
   const url = `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(
     geckoIds.join(',')
-  )}&vs_currencies=${encodeURIComponent(vs)}&include_24hr_change=true`;
+  )}&vs_currencies=${encodeURIComponent(vs)}&include_24hr_change=true`
 
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Price API ${res.status}`);
-    const data = (await res.json()) as Record<string, Record<string, number>>;
-    const prices: Record<string, number> = {};
-    const changes: Record<string, number> = {};
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`Price API ${res.status}`)
+    const data = (await res.json()) as Record<string, Record<string, number>>
+    const prices: Record<string, number> = {}
+    const changes: Record<string, number> = {}
     for (const assetId of assetIds) {
-      const gid = idMap[assetId] || assetId;
-      const price = data[gid]?.[vs];
-      const change = data[gid]?.[`${vs}_24h_change`];
-      if (typeof price === 'number') prices[assetId] = price;
-      if (typeof change === 'number') changes[assetId] = change;
+      const gid = idMap[assetId] || assetId
+      const price = data[gid]?.[vs]
+      const change = data[gid]?.[`${vs}_24h_change`]
+      if (typeof price === 'number') prices[assetId] = price
+      if (typeof change === 'number') changes[assetId] = change
     }
-    return { prices, changes };
+    return { prices, changes }
   } catch {
-    return { prices: {}, changes: {} };
+    return { prices: {}, changes: {} }
   }
 }
-
-
