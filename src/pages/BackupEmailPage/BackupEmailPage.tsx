@@ -10,13 +10,14 @@
  * Props: None (uses navigation state or API to get current email)
  */
 
-import { api } from "@/helpers/api"
-import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { api } from '@/helpers/api'
+import bgEclipsIcon from 'data-base64:@assets/public/bg-eclips.png'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export const BackupEmailPage: React.FC = () => {
   const navigate = useNavigate()
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useState('')
   const [isSaving, setIsSaving] = useState(false)
 
   // Load current backup email on mount (no loading state)
@@ -24,9 +25,9 @@ export const BackupEmailPage: React.FC = () => {
     const loadCurrentEmail = async () => {
       try {
         const prefs = await api.preferences()
-        setEmail(prefs.backupEmail || "")
+        setEmail(prefs.backupEmail || '')
       } catch (error) {
-        console.error("Failed to load preferences:", error)
+        console.error('Failed to load preferences:', error)
       }
     }
 
@@ -41,10 +42,10 @@ export const BackupEmailPage: React.FC = () => {
       try {
         // @ts-ignore
         ;(window as any)?.Telegram?.WebApp?.showAlert?.(
-          "Please enter a valid email address."
+          'Please enter a valid email address.'
         )
       } catch {
-        alert("Please enter a valid email address.")
+        alert('Please enter a valid email address.')
       }
       return
     }
@@ -56,24 +57,24 @@ export const BackupEmailPage: React.FC = () => {
       try {
         // @ts-ignore
         ;(window as any)?.Telegram?.WebApp?.showPopup?.({
-          title: "Backup Email",
+          title: 'Backup Email',
           message: trimmedEmail
-            ? "Email saved successfully."
-            : "Email removed successfully."
+            ? 'Email saved successfully.'
+            : 'Email removed successfully.',
         })
       } catch {}
 
       // Navigate back to settings
-      navigate("/settings")
+      navigate('/settings')
     } catch (error) {
-      console.error("Failed to save backup email:", error)
+      console.error('Failed to save backup email:', error)
       try {
         // @ts-ignore
         ;(window as any)?.Telegram?.WebApp?.showAlert?.(
-          "Failed to save backup email. Please try again."
+          'Failed to save backup email. Please try again.'
         )
       } catch {
-        alert("Failed to save backup email. Please try again.")
+        alert('Failed to save backup email. Please try again.')
       }
     } finally {
       setIsSaving(false)
@@ -81,7 +82,7 @@ export const BackupEmailPage: React.FC = () => {
   }
 
   const handleCancel = () => {
-    navigate("/settings")
+    navigate('/settings')
   }
 
   return (
@@ -90,10 +91,10 @@ export const BackupEmailPage: React.FC = () => {
       <div
         className="fixed -top-[60px] -right-[60px] w-[400px] h-[400px] opacity-60 z-0 pointer-events-none"
         style={{
-          backgroundImage: "url(/bg-eclips.png)",
-          backgroundSize: "contain",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center"
+          backgroundImage: `url(${bgEclipsIcon})`,
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
         }}
       />
 
@@ -108,7 +109,7 @@ export const BackupEmailPage: React.FC = () => {
           className="flex w-12 h-12 p-2.5 justify-center items-center rounded-[50px] border border-[color:var(--Radial,#252B31)]"
           style={{
             background:
-              "radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)"
+              'radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)',
           }}
           aria-label="Back">
           <svg
@@ -118,7 +119,7 @@ export const BackupEmailPage: React.FC = () => {
             viewBox="0 0 20 20"
             fill="none"
             className="flex-shrink-0"
-            style={{ aspectRatio: "1 / 1" }}>
+            style={{ aspectRatio: '1 / 1' }}>
             <path
               d="M3.33318 10H16.6665"
               stroke="#EBEFF0"
@@ -178,7 +179,7 @@ export const BackupEmailPage: React.FC = () => {
               disabled={isSaving}
               className="flex-1 h-14 p-3 bg-blue-500 rounded-2xl flex justify-center items-center gap-2.5 active:opacity-90 disabled:opacity-50">
               <div className="justify-center text-gray-100 text-base font-bold font-['Manrope'] leading-snug">
-                {isSaving ? "Saving..." : "Save Now"}
+                {isSaving ? 'Saving...' : 'Save Now'}
               </div>
             </button>
           </div>

@@ -1,7 +1,9 @@
-import { getAssetDisplayName, getSymbolWithNetwork } from "@/helpers/labels"
-import { CryptoAsset } from "@/types/wallet"
-import QRCode from "qrcode"
-import React from "react"
+import { getAssetDisplayName, getSymbolWithNetwork } from '@/helpers/labels'
+import { CryptoAsset } from '@/types/wallet'
+import alertIcon from 'data-base64:@assets/public/alert-02.png'
+import copyIcon from 'data-base64:@assets/public/copy-01.png'
+import QRCode from 'qrcode'
+import React from 'react'
 
 interface ReceiveAssetSheetProps {
   asset: CryptoAsset
@@ -10,29 +12,17 @@ interface ReceiveAssetSheetProps {
 
 export const ReceiveAssetSheet: React.FC<ReceiveAssetSheetProps> = ({
   asset,
-  onClose
+  onClose,
 }) => {
-  const address = asset.address || ""
+  const address = asset.address || ''
   const [copied, setCopied] = React.useState<boolean>(false)
   const handleCopy = () => {
     if (!address) return
     navigator.clipboard
       .writeText(address)
       .then(() => {
-        const wa: any = (window as any)?.Telegram?.WebApp
-        try {
-          wa?.HapticFeedback?.notificationOccurred?.("success")
-        } catch {}
-        // Inline visual feedback as reliable UX
         setCopied(true)
         setTimeout(() => setCopied(false), 1500)
-        // Best-effort popup/alert for TG (won't block UI if unavailable)
-        try {
-          wa?.showPopup?.({ title: "Copied", message: "Address copied" })
-        } catch {}
-        try {
-          wa?.showAlert?.("Address copied")
-        } catch {}
       })
       .catch(() => void 0)
   }
@@ -46,12 +36,12 @@ export const ReceiveAssetSheet: React.FC<ReceiveAssetSheetProps> = ({
     // Try Web Share API with QR image file if supported
     try {
       let files: File[] | undefined
-      const respOk = qrDataUrl && qrDataUrl.startsWith("data:")
+      const respOk = qrDataUrl && qrDataUrl.startsWith('data:')
       if (respOk) {
         const resp = await fetch(qrDataUrl)
         const blob = await resp.blob()
         const file = new File([blob], `${symbolLabel}-address.png`, {
-          type: "image/png"
+          type: 'image/png',
         })
         if ((navigator as any)?.canShare?.({ files: [file] })) {
           files = [file]
@@ -63,33 +53,28 @@ export const ReceiveAssetSheet: React.FC<ReceiveAssetSheetProps> = ({
       }
     } catch {}
 
-    // Fallback: Telegram alert with address (user can copy)
-    const wa: any = (window as any)?.Telegram?.WebApp
-    try {
-      wa?.showAlert?.(text)
-      return
-    } catch {}
     try {
       alert(text)
+      return
     } catch {}
   }
-  const [qrDataUrl, setQrDataUrl] = React.useState<string>("")
+  const [qrDataUrl, setQrDataUrl] = React.useState<string>('')
   React.useEffect(() => {
     let mounted = true
     if (address) {
       QRCode.toDataURL(address, {
         width: 288,
         margin: 1,
-        color: { dark: "#ffffff", light: "#12151A" }
+        color: { dark: '#ffffff', light: '#12151A' },
       })
         .then((url: string) => {
           if (mounted) setQrDataUrl(url)
         })
         .catch(() => {
-          if (mounted) setQrDataUrl("")
+          if (mounted) setQrDataUrl('')
         })
     } else {
-      setQrDataUrl("")
+      setQrDataUrl('')
     }
     return () => {
       mounted = false
@@ -107,7 +92,7 @@ export const ReceiveAssetSheet: React.FC<ReceiveAssetSheetProps> = ({
           className="flex w-12 h-12 p-2.5 justify-center items-center rounded-[50px] border border-[color:var(--Radial,#252B31)]"
           style={{
             background:
-              "radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)"
+              'radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)',
           }}
           onClick={onClose}
           aria-label="Back">
@@ -118,7 +103,7 @@ export const ReceiveAssetSheet: React.FC<ReceiveAssetSheetProps> = ({
             viewBox="0 0 20 20"
             fill="none"
             className="flex-shrink-0"
-            style={{ aspectRatio: "1 / 1" }}>
+            style={{ aspectRatio: '1 / 1' }}>
             <path
               d="M3.33318 10H16.6665"
               stroke="#EBEFF0"
@@ -146,8 +131,8 @@ export const ReceiveAssetSheet: React.FC<ReceiveAssetSheetProps> = ({
         <div
           className="w-full flex flex-col items-center gap-6 rounded-2xl border px-4 py-6"
           style={{
-            backgroundColor: "var(--Shading, #12151A)",
-            borderColor: "var(--Stock, #25282F)"
+            backgroundColor: 'var(--Shading, #12151A)',
+            borderColor: 'var(--Stock, #25282F)',
           }}>
           {/* Network row */}
           <div className="inline-flex justify-center items-start gap-2">
@@ -162,7 +147,7 @@ export const ReceiveAssetSheet: React.FC<ReceiveAssetSheetProps> = ({
           {/* QR code */}
           <div
             className="w-72 h-72 bg-zinc-900 rounded-xl flex items-center justify-center"
-            style={{ border: "1px solid #3F3F46" }}>
+            style={{ border: '1px solid #3F3F46' }}>
             {qrDataUrl ? (
               <img src={qrDataUrl} alt="QR Code" className="w-64 h-64" />
             ) : (
@@ -173,20 +158,20 @@ export const ReceiveAssetSheet: React.FC<ReceiveAssetSheetProps> = ({
           {/* Divider */}
           <div
             className="self-stretch h-px"
-            style={{ outline: "1px solid #3F3F46", outlineOffset: "-0.5px" }}
+            style={{ outline: '1px solid #3F3F46', outlineOffset: '-0.5px' }}
           />
 
           {/* Address row with copy */}
           <div className="self-stretch h-14 p-3.5 bg-neutral-800 rounded-xl border border-zinc-800 inline-flex justify-between items-center">
             <div className="text-neutral-400 text-sm font-medium leading-tight truncate">
-              {address || "No address available"}
+              {address || 'No address available'}
             </div>
             <button
               className="w-6 h-6 flex items-center justify-center"
               aria-label="Copy"
               onClick={handleCopy}
               disabled={!address}>
-              <img src="/copy-01.png" alt="Copy" className="w-5 h-5" />
+              <img src={copyIcon} alt="Copy" className="w-5 h-5" />
             </button>
           </div>
           {copied && (
@@ -209,10 +194,10 @@ export const ReceiveAssetSheet: React.FC<ReceiveAssetSheetProps> = ({
             </div>
             <div className="self-stretch inline-flex justify-start items-start gap-3">
               <div className="h-6 flex justify-start items-center">
-                <img src="/alert-02.png" alt="Alert" className="w-5 h-5" />
+                <img src={alertIcon} alt="Alert" className="w-5 h-5" />
               </div>
               <div className="flex-1 text-neutral-400 text-sm font-light leading-tight">
-                The current address only supports receiving{" "}
+                The current address only supports receiving{' '}
                 {getSymbolWithNetwork(asset.symbol)}. Sending other assets or
                 networks will result in loss.
               </div>

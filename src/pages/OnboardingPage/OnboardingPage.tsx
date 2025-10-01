@@ -1,5 +1,6 @@
 import { Page } from '@/components/Page'
 import { useWalletStore } from '@/stores/wallet'
+import splashIcon from 'data-base64:@assets/public/splash.svg'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -76,7 +77,7 @@ export const OnboardingPage: React.FC = () => {
           {/* Full background image */}
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: 'url(/splash.svg)' }}
+            style={{ backgroundImage: `url(${splashIcon})` }}
           />
 
           {/* Dark overlay */}

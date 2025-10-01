@@ -8,6 +8,15 @@
  * - `FIAT_SYMBOLS[code]` returns display currency symbol
  */
 
+import aedIcon from 'data-base64:@assets/public/aed.png'
+import bdtIcon from 'data-base64:@assets/public/bdt.png'
+import cnyIcon from 'data-base64:@assets/public/cny.png'
+import eurIcon from 'data-base64:@assets/public/eur.png'
+import gbpIcon from 'data-base64:@assets/public/gbp.png'
+import pkrIcon from 'data-base64:@assets/public/pkr.png'
+import rubIcon from 'data-base64:@assets/public/rub.png'
+import usdIcon from 'data-base64:@assets/public/usd.png'
+
 export const FIAT_CURRENCIES: string[] = [
   'USD', // United States Dollar
   'AED', // UAE dirham
@@ -15,17 +24,17 @@ export const FIAT_CURRENCIES: string[] = [
   'BDT', // Bangladeshi taka
   'PKR', // Pakistani rupee
   'RUB', // Russian ruble
-];
+]
 
 export const FIAT_META: Record<string, { label: string; icon?: string }> = {
-  USD: { label: 'United States Dollar', icon: '/usd.png' },
-  EUR: { label: 'Euro', icon: '/eur.png' },
-  GBP: { label: 'Pound sterling', icon: '/gbp.png' },
+  USD: { label: 'United States Dollar', icon: usdIcon },
+  EUR: { label: 'Euro', icon: eurIcon },
+  GBP: { label: 'Pound sterling', icon: gbpIcon },
   JPY: { label: 'Japanese yen' },
-  CNY: { label: 'Chinese yuan renminbi', icon: '/cny.png' },
+  CNY: { label: 'Chinese yuan renminbi', icon: cnyIcon },
   INR: { label: 'Indian rupee' },
-  BDT: { label: 'Bangladeshi taka', icon: '/bdt.png' },
-  PKR: { label: 'Pakistani rupee', icon: '/pkr.png' },
+  BDT: { label: 'Bangladeshi taka', icon: bdtIcon },
+  PKR: { label: 'Pakistani rupee', icon: pkrIcon },
   AUD: { label: 'Australian dollar' },
   CAD: { label: 'Canadian dollar' },
   CHF: { label: 'Swiss franc' },
@@ -35,12 +44,12 @@ export const FIAT_META: Record<string, { label: string; icon?: string }> = {
   NZD: { label: 'New Zealand dollar' },
   KRW: { label: 'South Korean won' },
   TRY: { label: 'Turkish lira' },
-  RUB: { label: 'Russian ruble', icon: '/rub.png' },
+  RUB: { label: 'Russian ruble', icon: rubIcon },
   BRL: { label: 'Brazilian real' },
   ZAR: { label: 'South African rand' },
   MXN: { label: 'Mexican peso' },
-  AED: { label: 'United Arab Emirates dirham', icon: '/aed.png' },
-};
+  AED: { label: 'United Arab Emirates dirham', icon: aedIcon },
+}
 
 export const FIAT_SYMBOLS: Record<string, string> = {
   USD: '$',
@@ -65,13 +74,14 @@ export const FIAT_SYMBOLS: Record<string, string> = {
   ZAR: 'R',
   MXN: 'MX$',
   AED: 'AED',
-};
-
-export function getFiatIconOrFallback(code: string): { type: 'icon' | 'initials'; value: string } {
-  const meta = FIAT_META[code];
-  if (meta?.icon) return { type: 'icon', value: meta.icon };
-  const letters = (code || '').toUpperCase().slice(0, 2);
-  return { type: 'initials', value: letters };
 }
 
-
+export function getFiatIconOrFallback(code: string): {
+  type: 'icon' | 'initials'
+  value: string
+} {
+  const meta = FIAT_META[code]
+  if (meta?.icon) return { type: 'icon', value: meta.icon }
+  const letters = (code || '').toUpperCase().slice(0, 2)
+  return { type: 'initials', value: letters }
+}

@@ -7,18 +7,19 @@
  * - Reads current passcodeEnabled from preferences; shows appropriate inputs
  */
 
-import { PasscodePromptModal } from "@/components/PasscodePromptModal/PasscodePromptModal"
-import { PinInput } from "@/components/PinInput/PinInput"
-import { api } from "@/helpers/api"
-import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { PasscodePromptModal } from '@/components/PasscodePromptModal/PasscodePromptModal'
+import { PinInput } from '@/components/PinInput/PinInput'
+import { api } from '@/helpers/api'
+import bgEclipsIcon from 'data-base64:@assets/public/bg-eclips.png'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export const PasscodePage: React.FC = () => {
   const navigate = useNavigate()
   const [passcodeEnabled, setPasscodeEnabled] = useState(false)
-  const [currentPasscode, setCurrentPasscode] = useState("")
-  const [newPasscode, setNewPasscode] = useState("")
-  const [confirmPasscode, setConfirmPasscode] = useState("")
+  const [currentPasscode, setCurrentPasscode] = useState('')
+  const [newPasscode, setNewPasscode] = useState('')
+  const [confirmPasscode, setConfirmPasscode] = useState('')
   const [busy, setBusy] = useState(false)
   const [showDisableModal, setShowDisableModal] = useState(false)
   const [disableError, setDisableError] = useState<string | null>(null)
@@ -51,10 +52,10 @@ export const PasscodePage: React.FC = () => {
           setBusy(false)
           try {
             ;(window as any)?.Telegram?.WebApp?.showAlert?.(
-              "Please enter your current passcode."
+              'Please enter your current passcode.'
             )
           } catch {
-            alert("Please enter your current passcode.")
+            alert('Please enter your current passcode.')
           }
           return
         }
@@ -69,19 +70,19 @@ export const PasscodePage: React.FC = () => {
         await api.updatePreferences({
           setPasscode: {
             currentPasscode: currentPasscode || undefined,
-            newPasscode
-          }
+            newPasscode,
+          },
         })
       }
-      navigate("/settings")
+      navigate('/settings')
     } catch (e) {
       try {
         // @ts-ignore
         ;(window as any)?.Telegram?.WebApp?.showAlert?.(
-          String((e as any)?.message || "Failed to update passcode")
+          String((e as any)?.message || 'Failed to update passcode')
         )
       } catch {
-        alert(String((e as any)?.message || "Failed to update passcode"))
+        alert(String((e as any)?.message || 'Failed to update passcode'))
       }
     } finally {
       setBusy(false)
@@ -90,7 +91,7 @@ export const PasscodePage: React.FC = () => {
 
   const handleDisable = async () => {
     if (busy || !passcodeEnabled) {
-      navigate("/settings")
+      navigate('/settings')
       return
     }
     setDisableError(null)
@@ -98,7 +99,7 @@ export const PasscodePage: React.FC = () => {
   }
 
   const handleCancel = () => {
-    navigate("/settings")
+    navigate('/settings')
   }
 
   return (
@@ -108,10 +109,10 @@ export const PasscodePage: React.FC = () => {
         <div
           className="fixed -top-[60px] -right-[60px] w-[400px] h-[400px] opacity-60 z-0 pointer-events-none"
           style={{
-            backgroundImage: "url(/bg-eclips.png)",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center"
+            backgroundImage: `url(${bgEclipsIcon})`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
           }}
         />
 
@@ -126,7 +127,7 @@ export const PasscodePage: React.FC = () => {
             className="flex w-12 h-12 p-2.5 justify-center items-center rounded-[50px] border border-[color:var(--Radial,#252B31)]"
             style={{
               background:
-                "radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)"
+                'radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)',
             }}
             aria-label="Back">
             <svg
@@ -136,7 +137,7 @@ export const PasscodePage: React.FC = () => {
               viewBox="0 0 20 20"
               fill="none"
               className="flex-shrink-0"
-              style={{ aspectRatio: "1 / 1" }}>
+              style={{ aspectRatio: '1 / 1' }}>
               <path
                 d="M3.33318 10H16.6665"
                 stroke="#EBEFF0"
@@ -164,7 +165,7 @@ export const PasscodePage: React.FC = () => {
               <div className="self-stretch flex flex-col justify-start items-start gap-[5px]">
                 <div className="self-stretch flex flex-col justify-start items-start gap-3">
                   <div className="self-stretch justify-center text-gray-100 text-base font-medium font-['Manrope'] leading-snug">
-                    {passcodeEnabled ? "Update Passcode" : "Set Passcode"}
+                    {passcodeEnabled ? 'Update Passcode' : 'Set Passcode'}
                   </div>
 
                   {passcodeEnabled && (
@@ -183,7 +184,7 @@ export const PasscodePage: React.FC = () => {
 
                   <div className="self-stretch inline-flex flex-col gap-2">
                     <div className="text-neutral-400 text-sm">
-                      {passcodeEnabled ? "New passcode" : "Passcode"}
+                      {passcodeEnabled ? 'New passcode' : 'Passcode'}
                     </div>
                     <PinInput
                       length={6}
@@ -230,7 +231,7 @@ export const PasscodePage: React.FC = () => {
                 }
                 className="flex-1 h-14 p-3 bg-blue-500 rounded-2xl flex justify-center items-center gap-2.5 active:opacity-90 disabled:opacity-50">
                 <div className="justify-center text-gray-100 text-base font-bold font-['Manrope'] leading-snug">
-                  {busy ? "Saving..." : passcodeEnabled ? "Update" : "Save Now"}
+                  {busy ? 'Saving...' : passcodeEnabled ? 'Update' : 'Save Now'}
                 </div>
               </button>
             </div>
@@ -259,13 +260,13 @@ export const PasscodePage: React.FC = () => {
           onSubmit={async ({ currentPasscode }) => {
             try {
               await api.updatePreferences({
-                disablePasscode: { currentPasscode }
+                disablePasscode: { currentPasscode },
               })
               setShowDisableModal(false)
               setDisableError(null)
-              navigate("/settings")
+              navigate('/settings')
             } catch (e: any) {
-              setDisableError(String(e?.message || "Invalid passcode"))
+              setDisableError(String(e?.message || 'Invalid passcode'))
             }
           }}
         />

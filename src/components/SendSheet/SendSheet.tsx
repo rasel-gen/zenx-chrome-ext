@@ -1,6 +1,7 @@
 import { SendAssetSheet } from '@/components/SendAssetSheet/SendAssetSheet'
 import { getAssetDisplayName, getAssetNetworkLabel } from '@/helpers/labels'
 import { CryptoAsset } from '@/types/wallet'
+import arrowSendIcon from 'data-base64:@assets/public/arrow-send.png'
 import React from 'react'
 
 interface SendSheetProps {
@@ -90,7 +91,7 @@ export const SendSheet: React.FC<SendSheetProps> = ({ assets, onClose }) => {
               </div>
               <div className="w-10 h-10 bg-neutral-800 rounded-[50px] outline outline-1 outline-offset-[-1px] outline-zinc-800 flex justify-center items-center">
                 <img
-                  src="/arrow-send.png"
+                  src={arrowSendIcon}
                   alt=""
                   className="w-5 h-5 brightness-0 invert opacity-80"
                 />

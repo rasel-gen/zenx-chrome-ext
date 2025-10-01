@@ -1,13 +1,14 @@
-import { CurrencyBadge } from "@/components/CurrencyBadge/CurrencyBadge"
-import { Page } from "@/components/Page"
+import { CurrencyBadge } from '@/components/CurrencyBadge/CurrencyBadge'
+import { Page } from '@/components/Page'
 // Biometry removed in favor of passcode
-import { PasscodePromptModal } from "@/components/PasscodePromptModal/PasscodePromptModal"
-import { SeedPhraseModal } from "@/components/SeedPhraseModal/SeedPhraseModal"
-import { FIAT_CURRENCIES, FIAT_META, FIAT_SYMBOLS } from "@/config/fiats"
-import { api } from "@/helpers/api"
-import { useWalletStore } from "@/stores/wallet"
-import React, { useEffect, useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { PasscodePromptModal } from '@/components/PasscodePromptModal/PasscodePromptModal'
+import { SeedPhraseModal } from '@/components/SeedPhraseModal/SeedPhraseModal'
+import { FIAT_CURRENCIES, FIAT_META, FIAT_SYMBOLS } from '@/config/fiats'
+import { api } from '@/helpers/api'
+import { useWalletStore } from '@/stores/wallet'
+import arrowRightIcon from 'data-base64:@assets/public/arrow-right-01.png'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export const SettingsPage: React.FC = () => {
   const navigate = useNavigate()
@@ -16,9 +17,9 @@ export const SettingsPage: React.FC = () => {
   const userData = useMemo(() => {
     // Fallback for development/non-Telegram environment
     return {
-      name: "John Smith",
-      username: "john_smith",
-      avatar: undefined
+      name: 'John Smith',
+      username: 'john_smith',
+      avatar: undefined,
     }
   }, [])
 
@@ -29,7 +30,7 @@ export const SettingsPage: React.FC = () => {
   const [exporting, setExporting] = useState(false)
   const [showSeedModal, setShowSeedModal] = useState(false)
   const [mnemonic, setMnemonic] = useState<string | null>(null)
-  const [backupEmail, setBackupEmail] = useState<string>("")
+  const [backupEmail, setBackupEmail] = useState<string>('')
   const [passcodeEnabled, setPasscodeEnabled] = useState<boolean>(false)
   const [showVerifyPassModal, setShowVerifyPassModal] = useState(false)
   const [verifyError, setVerifyError] = useState<string | null>(null)
@@ -41,10 +42,10 @@ export const SettingsPage: React.FC = () => {
     ;(async () => {
       try {
         const prefs = await api.preferences()
-        if (typeof prefs?.backupEmail === "string") {
+        if (typeof prefs?.backupEmail === 'string') {
           setBackupEmail(prefs.backupEmail)
         }
-        if (typeof (prefs as any)?.passcodeEnabled === "boolean") {
+        if (typeof (prefs as any)?.passcodeEnabled === 'boolean') {
           setPasscodeEnabled(Boolean((prefs as any).passcodeEnabled))
         }
       } catch {}
@@ -52,17 +53,17 @@ export const SettingsPage: React.FC = () => {
   }, [])
 
   const maskedEmail = useMemo(() => {
-    const email = backupEmail || ""
-    const [local, domain] = email.split("@")
-    if (!local || !domain) return ""
+    const email = backupEmail || ''
+    const [local, domain] = email.split('@')
+    if (!local || !domain) return ''
     const visible = local.slice(0, 2)
-    return `${visible}${local.length > 2 ? "***" : ""}@${domain}`
+    return `${visible}${local.length > 2 ? '***' : ''}@${domain}`
   }, [backupEmail])
 
   // Biometry settings removed
 
   return (
-    <Page back onBack={() => navigate("/dashboard")}>
+    <Page back onBack={() => navigate('/dashboard')}>
       <div className="min-h-screen relative bg-zinc-950 overflow-hidden">
         {/* Blue glows */}
         <div className="pointer-events-none fixed right-6 top-10 w-20 h-72 rotate-[-36.73deg] blur-3xl bg-blue-500 opacity-90" />
@@ -75,9 +76,9 @@ export const SettingsPage: React.FC = () => {
               className="flex w-12 h-12 p-2.5 justify-center items-center rounded-[50px] border border-[color:var(--Radial,#252B31)]"
               style={{
                 background:
-                  "radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)"
+                  'radial-gradient(232.26% 131.83% at 4.47% 1.52%, #252B31 0%, rgba(27,32,37,0.50) 100%)',
               }}
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate('/dashboard')}
               aria-label="Back">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +87,7 @@ export const SettingsPage: React.FC = () => {
                 viewBox="0 0 20 20"
                 fill="none"
                 className="flex-shrink-0"
-                style={{ aspectRatio: "1 / 1" }}>
+                style={{ aspectRatio: '1 / 1' }}>
                 <path
                   d="M3.33318 10H16.6665"
                   stroke="#EBEFF0"
@@ -147,14 +148,14 @@ export const SettingsPage: React.FC = () => {
             {/* Wallets Management */}
             <button
               className="flex justify-between items-center w-full cursor-pointer active:opacity-80"
-              onClick={() => navigate("/settings/wallets")}>
+              onClick={() => navigate('/settings/wallets')}>
               <div className="flex items-center gap-2">
                 <div
                   className="w-11 h-11 flex justify-center items-center rounded-[45.83px]"
                   style={{
-                    padding: "9.167px",
-                    background: "var(--Shading-2, #1D2026)",
-                    aspectRatio: "1 / 1"
+                    padding: '9.167px',
+                    background: 'var(--Shading-2, #1D2026)',
+                    aspectRatio: '1 / 1',
                   }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -186,10 +187,10 @@ export const SettingsPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <span className="text-neutral-400 text-base font-medium font-['Manrope'] leading-relaxed">
                   {(keyrings || []).length} wallet
-                  {(keyrings || []).length !== 1 ? "s" : ""}
+                  {(keyrings || []).length !== 1 ? 's' : ''}
                 </span>
                 <img
-                  src="/arrow-right-01.png"
+                  src={arrowRightIcon}
                   alt="Manage"
                   className="w-4 h-4 opacity-60"
                 />
@@ -203,9 +204,9 @@ export const SettingsPage: React.FC = () => {
                 <div
                   className="w-11 h-11 flex justify-center items-center rounded-[45.83px]"
                   style={{
-                    padding: "9.167px",
-                    background: "var(--Shading-2, #1D2026)",
-                    aspectRatio: "1 / 1"
+                    padding: '9.167px',
+                    background: 'var(--Shading-2, #1D2026)',
+                    aspectRatio: '1 / 1',
                   }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -235,13 +236,13 @@ export const SettingsPage: React.FC = () => {
               </div>
               <button
                 className="flex items-center gap-2 bg-transparent ml-auto min-w-0"
-                onClick={() => navigate("/settings/backup-email")}
+                onClick={() => navigate('/settings/backup-email')}
                 aria-label="Edit backup email">
                 <span className="text-neutral-400 text-base font-medium font-['Manrope'] leading-relaxed text-right truncate max-w-[180px]">
-                  {backupEmail ? maskedEmail : "Add"}
+                  {backupEmail ? maskedEmail : 'Add'}
                 </span>
                 <img
-                  src="/arrow-right-01.png"
+                  src={arrowRightIcon}
                   alt="Edit"
                   className="w-4 h-4 opacity-60 shrink-0"
                 />
@@ -255,9 +256,9 @@ export const SettingsPage: React.FC = () => {
                 <div
                   className="w-11 h-11 flex justify-center items-center rounded-[45.83px]"
                   style={{
-                    padding: "9.167px",
-                    background: "var(--Shading-2, #1D2026)",
-                    aspectRatio: "1 / 1"
+                    padding: '9.167px',
+                    background: 'var(--Shading-2, #1D2026)',
+                    aspectRatio: '1 / 1',
                   }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -290,7 +291,7 @@ export const SettingsPage: React.FC = () => {
                   {baseCurrency}
                 </span>
                 <img
-                  src="/arrow-right-01.png"
+                  src={arrowRightIcon}
                   alt="Open"
                   className="w-4 h-4 opacity-60"
                 />
@@ -319,12 +320,12 @@ export const SettingsPage: React.FC = () => {
                               {code}
                             </div>
                             <div className="text-neutral-400 text-sm font-medium leading-tight">
-                              {FIAT_META[code]?.label ?? ""}
+                              {FIAT_META[code]?.label ?? ''}
                             </div>
                           </div>
                         </div>
                         <div className="text-neutral-400 text-base font-semibold leading-snug ml-2 min-w-[1.5rem] text-right">
-                          {FIAT_SYMBOLS[code] ?? ""}
+                          {FIAT_SYMBOLS[code] ?? ''}
                         </div>
                       </button>
                     ))}
@@ -338,14 +339,14 @@ export const SettingsPage: React.FC = () => {
             {/* App Lock (Passcode) */}
             <button
               className="flex justify-between items-center w-full cursor-pointer active:opacity-80"
-              onClick={() => navigate("/settings/passcode")}>
+              onClick={() => navigate('/settings/passcode')}>
               <div className="flex items-center gap-2">
                 <div
                   className="w-11 h-11 flex justify-center items-center rounded-[45.83px]"
                   style={{
-                    padding: "9.167px",
-                    background: "var(--Shading-2, #1D2026)",
-                    aspectRatio: "1 / 1"
+                    padding: '9.167px',
+                    background: 'var(--Shading-2, #1D2026)',
+                    aspectRatio: '1 / 1',
                   }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -370,12 +371,12 @@ export const SettingsPage: React.FC = () => {
                   </svg>
                 </div>
                 <span className="text-gray-100 text-base font-medium font-['Manrope'] leading-relaxed">
-                  Passcode {passcodeEnabled ? "(Enabled)" : "(Disabled)"}{" "}
+                  Passcode {passcodeEnabled ? '(Enabled)' : '(Disabled)'}{' '}
                 </span>
               </div>
               <div className="w-5 h-5 flex justify-center items-center">
                 <img
-                  src="/arrow-right-01.png"
+                  src={arrowRightIcon}
                   alt="Open"
                   className="w-4 h-4 opacity-60"
                 />
@@ -404,10 +405,10 @@ export const SettingsPage: React.FC = () => {
                   try {
                     // @ts-ignore
                     ;(window as any)?.Telegram?.WebApp?.showAlert?.(
-                      "Failed to export recovery phrase."
+                      'Failed to export recovery phrase.'
                     )
                   } catch {
-                    alert("Failed to export recovery phrase.")
+                    alert('Failed to export recovery phrase.')
                   }
                 } finally {
                   setExporting(false)
@@ -419,9 +420,9 @@ export const SettingsPage: React.FC = () => {
                 <div
                   className="w-11 h-11 flex justify-center items-center rounded-[45.83px]"
                   style={{
-                    padding: "9.167px",
-                    background: "var(--Shading-2, #1D2026)",
-                    aspectRatio: "1 / 1"
+                    padding: '9.167px',
+                    background: 'var(--Shading-2, #1D2026)',
+                    aspectRatio: '1 / 1',
                   }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -444,12 +445,12 @@ export const SettingsPage: React.FC = () => {
                   </svg>
                 </div>
                 <span className="text-gray-100 text-base font-medium font-['Manrope'] leading-relaxed">
-                  {exporting ? "Exporting..." : "Export Recovery Phrase"}
+                  {exporting ? 'Exporting...' : 'Export Recovery Phrase'}
                 </span>
               </div>
               <div className="w-5 h-5 flex justify-center items-center">
                 <img
-                  src="/arrow-right-01.png"
+                  src={arrowRightIcon}
                   alt="Open"
                   className="w-4 h-4 opacity-60"
                 />
@@ -466,9 +467,9 @@ export const SettingsPage: React.FC = () => {
                 <div
                   className="w-11 h-11 flex justify-center items-center rounded-[45.83px]"
                   style={{
-                    padding: "9.167px",
-                    background: "var(--Shading-2, #1D2026)",
-                    aspectRatio: "1 / 1"
+                    padding: '9.167px',
+                    background: 'var(--Shading-2, #1D2026)',
+                    aspectRatio: '1 / 1',
                   }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -493,7 +494,7 @@ export const SettingsPage: React.FC = () => {
                   English
                 </span>
                 <img
-                  src="/arrow-right-01.png"
+                  src={arrowRightIcon}
                   alt="Expand"
                   className="w-4 h-4 opacity-60"
                 />
@@ -505,14 +506,14 @@ export const SettingsPage: React.FC = () => {
             {/* Privacy Policy */}
             <button
               className="flex justify-between items-center w-full"
-              onClick={() => navigate("/privacy")}>
+              onClick={() => navigate('/privacy')}>
               <div className="flex items-center gap-2">
                 <div
                   className="w-11 h-11 flex justify-center items-center rounded-[45.83px]"
                   style={{
-                    padding: "9.167px",
-                    background: "var(--Shading-2, #1D2026)",
-                    aspectRatio: "1 / 1"
+                    padding: '9.167px',
+                    background: 'var(--Shading-2, #1D2026)',
+                    aspectRatio: '1 / 1',
                   }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -549,7 +550,7 @@ export const SettingsPage: React.FC = () => {
               </div>
               <div className="w-5 h-5 flex justify-center items-center">
                 <img
-                  src="/arrow-right-01.png"
+                  src={arrowRightIcon}
                   alt="Open"
                   className="w-4 h-4 opacity-60"
                 />
@@ -561,14 +562,16 @@ export const SettingsPage: React.FC = () => {
             {/* Contact Us */}
             <button
               className="flex justify-between items-center w-full"
-              onClick={() => navigate("/settings/contact")}>
+              onClick={() => {
+                navigate('/settings/contact')
+              }}>
               <div className="flex items-center gap-2">
                 <div
                   className="w-11 h-11 flex justify-center items-center rounded-[45.83px]"
                   style={{
-                    padding: "9.167px",
-                    background: "var(--Shading-2, #1D2026)",
-                    aspectRatio: "1 / 1"
+                    padding: '9.167px',
+                    background: 'var(--Shading-2, #1D2026)',
+                    aspectRatio: '1 / 1',
                   }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -597,7 +600,7 @@ export const SettingsPage: React.FC = () => {
               </div>
               <div className="w-5 h-5 flex justify-center items-center">
                 <img
-                  src="/arrow-right-01.png"
+                  src={arrowRightIcon}
                   alt="Open"
                   className="w-4 h-4 opacity-60"
                 />
@@ -632,7 +635,7 @@ export const SettingsPage: React.FC = () => {
               setShowVerifyPassModal(false)
               setVerifyError(null)
             } catch (e: any) {
-              setVerifyError(String(e?.message || "Invalid passcode"))
+              setVerifyError(String(e?.message || 'Invalid passcode'))
               // keep modal open for retry
             }
           }}

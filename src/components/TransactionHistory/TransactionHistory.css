@@ -13,14 +13,14 @@
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: var(--tg-theme-text-color, #000000);
+  color: var(--color-text);
 }
 
 .transaction-history__see-all {
   background: none;
   border: none;
   font-size: 14px;
-  color: var(--tg-theme-accent-text-color, #007AFF);
+  color: var(--tg-theme-accent-text-color, #007aff);
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 6px;
@@ -81,7 +81,7 @@
 }
 
 .transaction-history__icon--buy {
-  background: var(--tg-theme-accent-text-color, #007AFF);
+  background: var(--tg-theme-accent-text-color, #007aff);
 }
 
 .transaction-history__info {

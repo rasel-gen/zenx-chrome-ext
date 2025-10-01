@@ -5,7 +5,8 @@
   "compilerOptions": {
     "verbatimModuleSyntax": false,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@assets/*": ["./assets/*"],
     },
     "baseUrl": ".",
     "types": ["node"],
@@ -15,6 +16,6 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
-    "jsx": "react-jsx"
-  }
+    "jsx": "react-jsx",
+  },
 }

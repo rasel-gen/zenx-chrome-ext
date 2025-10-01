@@ -6,6 +6,8 @@ import { api, publicApi } from '@/helpers/api'
 import { getAssetDisplayName, getSymbolWithNetwork } from '@/helpers/labels'
 import { useWalletStore } from '@/stores/wallet'
 import { CryptoAsset } from '@/types/wallet'
+import sendSuccessIcon from 'data-base64:@assets/public/send-success.png'
+import transactionHistoryIcon from 'data-base64:@assets/public/transaction-history.png'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -184,7 +186,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
               navigate('/dashboard')
             }}
           />
-          <div className="text-gray-100 text-base font-bold">
+          <div className="text-gray-100 text-sm font-bold">
             Send {getSymbolWithNetwork(asset.symbol)}
           </div>
           <div className="w-12 h-12 p-2.5" />
@@ -193,7 +195,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
         <div className="w-full px-4 mt-10 pb-24 flex flex-col items-center gap-12">
           <div className="w-40 h-40 relative">
             <img
-              src="/send-success.png"
+              src={sendSuccessIcon}
               alt="Send successful"
               className="w-40 h-40 object-contain"
             />
@@ -203,7 +205,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
             <div className="text-gray-100 text-2xl font-bold leading-loose">
               Send Successful
             </div>
-            <div className="text-neutral-400 text-base leading-normal">
+            <div className="text-neutral-400 text-sm leading-normal">
               You successfully paid {success.amount} {success.symbol}
             </div>
           </div>
@@ -279,7 +281,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
               onClose()
               navigate('/dashboard')
             }}>
-            <div className="text-gray-100 text-base font-bold leading-snug">
+            <div className="text-gray-100 text-sm font-bold leading-snug">
               Back to Home
             </div>
           </button>
@@ -298,14 +300,14 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
         {/* Header */}
         <div className="w-full px-4 pt-4 flex justify-between items-center">
           <BackButton onClick={onClose} />
-          <div className="text-gray-100 text-base font-bold">
+          <div className="text-gray-100 text-sm font-bold">
             Send {getSymbolWithNetwork(asset.symbol)}
           </div>
           <div className="w-12 h-12 p-2.5 rounded-[50px]" />
         </div>
 
         {/* Asset summary card */}
-        <div className="px-4 mt-6">
+        <div className="px-4 mt-4">
           <div className="w-full p-4 bg-neutral-900 rounded-2xl outline outline-[1.5px] outline-offset-[-1.5px] outline-zinc-800 flex justify-between items-center">
             <div className="flex items-center gap-3">
               <img
@@ -314,7 +316,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
                 className="w-10 h-10 rounded-full"
               />
               <div className="inline-flex flex-col items-start gap-2">
-                <div className="text-gray-100 text-base font-semibold leading-snug">
+                <div className="text-gray-100 text-sm font-semibold leading-snug">
                   {getAssetDisplayName(asset.id, asset.symbol, asset.name)}
                 </div>
                 <div className="text-neutral-400 text-sm font-medium leading-tight">
@@ -326,7 +328,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
               <div className="text-neutral-400 text-sm font-medium leading-tight">
                 Total assets
               </div>
-              <div className="text-gray-100 text-base font-medium leading-snug">
+              <div className="text-gray-100 text-sm font-medium leading-snug">
                 ${asset.balanceUSD.toFixed(2)}
               </div>
             </div>
@@ -335,17 +337,17 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
 
         {/* Form card */}
         <div className="px-4 mt-4">
-          <div className="w-full p-4 bg-neutral-900 rounded-2xl outline outline-1 outline-offset-[-1px] outline-zinc-800 inline-flex flex-col items-start gap-10">
+          <div className="w-full p-4 bg-neutral-900 rounded-2xl outline outline-1 outline-offset-[-1px] outline-zinc-800 inline-flex flex-col items-start gap-6">
             <div className="w-full flex flex-col items-start gap-6">
               <div className="text-neutral-400 text-sm font-medium leading-tight">
                 Send with {asset.name} address
               </div>
 
               {/* Address */}
-              <div className="w-full flex flex-col gap-6">
+              <div className="w-full flex flex-col gap-4">
                 <div className="w-full flex flex-col gap-[5px]">
                   <div className="w-full flex flex-col gap-3">
-                    <div className="text-gray-100 text-base font-medium leading-snug">
+                    <div className="text-gray-100 text-sm font-medium leading-snug">
                       {asset.symbol} Address
                     </div>
                     <div className="w-full inline-flex gap-2">
@@ -361,7 +363,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
                       />
                       <button className="w-14 h-14 px-4 py-3.5 bg-neutral-800 rounded-2xl outline outline-1 outline-offset-[-1px] outline-zinc-800 flex justify-center items-center">
                         <img
-                          src="/transaction-history.png"
+                          src={transactionHistoryIcon}
                           alt="Scan"
                           className="w-6 h-6 opacity-80"
                         />
@@ -398,7 +400,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
 
               {/* Amount */}
               <div className="w-full flex flex-col gap-3">
-                <div className="text-gray-100 text-base font-medium leading-snug">
+                <div className="text-gray-100 text-sm font-medium leading-snug">
                   Amount
                 </div>
                 <div
@@ -412,19 +414,19 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
                     type="text"
                     inputMode="decimal"
                     pattern="[0-9]*\.?[0-9]*"
-                    className="bg-transparent text-gray-100 text-base font-bold leading-snug flex-1 outline-none"
+                    className="min-w-0 bg-transparent text-gray-100 text-sm font-bold leading-snug flex-1 outline-none"
                     placeholder="0.00"
                     value={amt}
                     onChange={handleAmountChange}
                     autoComplete="off"
                     spellCheck="false"
                   />
-                  <div className="text-neutral-400 text-base font-medium leading-snug">
+                  <div className="text-neutral-400 text-sm font-medium leading-snug">
                     {asset.symbol}
                   </div>
                   <button
                     type="button"
-                    className="px-3 py-1.5 bg-neutral-800 rounded-lg flex justify-center items-center disabled:opacity-50 hover:bg-neutral-700 transition-colors text-sm font-medium text-gray-100"
+                    className="px-3 py-1.5 bg-neutral-800 rounded-lg flex justify-center items-center disabled:opacity-50 hover:bg-neutral-700 transition-colors text-sm font-medium text-gray-100 flex-shrink-0 min-w-0"
                     onClick={handleMaxClick}
                     disabled={asset.balance === 0}>
                     Max
@@ -483,11 +485,11 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
             </div>
 
             {/* Buttons */}
-            <div className="w-full mt-6 inline-flex justify-between items-center">
+            <div className="w-full mt-6 inline-flex gap-2 justify-between items-center">
               <button
                 className="w-44 h-14 p-3 bg-neutral-800 rounded-2xl outline outline-1 outline-offset-[-1px] outline-zinc-800 flex justify-center items-center"
                 onClick={onClose}>
-                <div className="text-neutral-400 text-base font-medium leading-normal">
+                <div className="text-neutral-400 text-sm font-medium leading-normal">
                   Cancel
                 </div>
               </button>
@@ -508,13 +510,11 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
                       setBusy(false)
                       return
                     }
-                    const res = await useWalletStore
-                      .getState()
-                      .sendTransfer({
-                        chain,
-                        toAddress: cleanedTo,
-                        amount: amt.trim(),
-                      })
+                    const res = await useWalletStore.getState().sendTransfer({
+                      chain,
+                      toAddress: cleanedTo,
+                      amount: amt.trim(),
+                    })
                     const txid = (res as any)?.txid || ''
                     const from = (res as any)?.from || ''
                     setOk(`Sent: ${txid || 'Transaction submitted'}`)
@@ -532,7 +532,7 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
                     setBusy(false)
                   }
                 }}>
-                <div className="text-gray-100 text-base font-bold leading-snug">
+                <div className="text-gray-100 text-sm font-bold leading-snug">
                   {busy ? 'Sending...' : 'Send Now'}
                 </div>
               </button>
@@ -553,14 +553,12 @@ export const SendAssetSheet: React.FC<SendAssetSheetProps> = ({
               setBusy(true)
               const chain = asset.id.toLowerCase() as any
               const cleanedTo = to.replace(/\s+/g, '').trim()
-              const res = await useWalletStore
-                .getState()
-                .sendTransfer({
-                  chain,
-                  toAddress: cleanedTo,
-                  amount: amt.trim(),
-                  passcode: currentPasscode,
-                })
+              const res = await useWalletStore.getState().sendTransfer({
+                chain,
+                toAddress: cleanedTo,
+                amount: amt.trim(),
+                passcode: currentPasscode,
+              })
               const txid = (res as any)?.txid || ''
               const from = (res as any)?.from || ''
               setOk(`Sent: ${txid || 'Transaction submitted'}`)

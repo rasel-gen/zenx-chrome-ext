@@ -1,4 +1,6 @@
-import React from "react"
+import bellIcon from 'data-base64:@assets/public/bell-icon.png'
+import bgEclipsIcon from 'data-base64:@assets/public/bg-eclips.png'
+import React from 'react'
 
 interface User {
   name: string
@@ -15,7 +17,7 @@ interface WalletHeaderProps {
 export const WalletHeader: React.FC<WalletHeaderProps> = ({
   user,
   onNotificationClick,
-  notificationCount = 0
+  notificationCount = 0,
 }) => {
   return (
     <div className="flex w-full justify-between items-center px-0 py-4 bg-transparent relative overflow-visible">
@@ -23,10 +25,10 @@ export const WalletHeader: React.FC<WalletHeaderProps> = ({
       <div
         className="fixed -top-[60px] -right-[60px] w-[400px] h-[400px] opacity-60 z-0 pointer-events-none"
         style={{
-          backgroundImage: "url(/bg-eclips.png)",
-          backgroundSize: "contain",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center"
+          backgroundImage: `url(${bgEclipsIcon})`,
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
         }}
       />
 
@@ -49,13 +51,13 @@ export const WalletHeader: React.FC<WalletHeaderProps> = ({
           {user.name && (
             <h1
               className="m-0 text-lg font-semibold leading-relaxed"
-              style={{ color: "var(--color-text)" }}>
+              style={{ color: 'var(--color-text)' }}>
               {user.name}
             </h1>
           )}
           <span
             className="text-sm font-medium leading-tight"
-            style={{ color: "var(--color-hint)" }}>
+            style={{ color: 'var(--color-hint)' }}>
             @{user.username}
           </span>
         </div>
@@ -65,15 +67,15 @@ export const WalletHeader: React.FC<WalletHeaderProps> = ({
         className="w-12 h-12 p-2.5 rounded-[50px] inline-flex justify-center items-center gap-2.5 overflow-visible border-none cursor-pointer transition-all active:scale-95 relative z-10"
         onClick={onNotificationClick}
         aria-label="Notifications"
-        style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+        style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.12)"
+          e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.12)'
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)"
+          e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.08)'
         }}>
         <img
-          src="/bell-icon.png"
+          src={bellIcon}
           alt="Notifications"
           width="24"
           height="24"
@@ -83,7 +85,7 @@ export const WalletHeader: React.FC<WalletHeaderProps> = ({
           <span
             aria-label={`${notificationCount} new notifications`}
             className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-600 text-white text-[10px] leading-[18px] text-center font-bold shadow z-20 pointer-events-none">
-            {notificationCount > 99 ? "99+" : notificationCount}
+            {notificationCount > 99 ? '99+' : notificationCount}
           </span>
         )}
       </button>

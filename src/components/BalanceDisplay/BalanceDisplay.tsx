@@ -1,23 +1,10 @@
-/**
- * BalanceDisplay Component
- *
- * Usage:
- * - Shows current wallet balance with currency selector
- * - Includes eye icon to toggle balance visibility
- * - Features currency dropdown for USD/other currencies
- * - Animates balance changes smoothly
- *
- * Props:
- * - balance: Current balance amount
- * - currency: Selected currency (USD, EUR, etc.)
- * - isVisible: Whether balance is currently visible
- * - onToggleVisibility: Callback for eye icon click
- * - onCurrencyChange?: Callback for currency selection change
- */
-
-import { CurrencyBadge } from "@/components/CurrencyBadge/CurrencyBadge"
-import { FIAT_CURRENCIES, FIAT_META, FIAT_SYMBOLS } from "@/config/fiats"
-import React, { useState } from "react"
+import { CurrencyBadge } from '@/components/CurrencyBadge/CurrencyBadge'
+import { FIAT_CURRENCIES, FIAT_META, FIAT_SYMBOLS } from '@/config/fiats'
+import arrowDownIcon from 'data-base64:@assets/public/arrow-down-01.png'
+import arrowReceive from 'data-base64:@assets/public/arrow-receive.png'
+import arrowSend from 'data-base64:@assets/public/arrow-send.png'
+import transactionHistory from 'data-base64:@assets/public/transaction-history.png'
+import React, { useState } from 'react'
 
 interface BalanceDisplayProps {
   balance: number
@@ -39,23 +26,23 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
   onCurrencyChange,
   onSend,
   onReceive,
-  onHistory
+  onHistory,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const currencies = FIAT_CURRENCIES
 
   const formatBalance = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     }).format(amount)
   }
 
   // Avoid showing 0 during refresh; keep displaying last-known balance
-  const [intPart, decPart] = formatBalance(balance).split(".") as [
+  const [intPart, decPart] = formatBalance(balance).split('.') as [
     string,
-    string?
+    string?,
   ]
 
   return (
@@ -71,11 +58,11 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
                 {isVisible ? (
                   <>
                     <span className="text-gray-100 text-3xl font-bold leading-9 tracking-wider">
-                      {FIAT_SYMBOLS[currency] ?? ""}
+                      {FIAT_SYMBOLS[currency] ?? ''}
                       {intPart}
                     </span>
                     <span className="text-neutral-400 text-3xl font-medium leading-9 tracking-wider">
-                      .{decPart ?? "00"}
+                      .{decPart ?? '00'}
                     </span>
                   </>
                 ) : (
@@ -87,10 +74,10 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
               <button
                 className="w-6 h-6 rounded-full flex items-center justify-center border-0"
                 onClick={onToggleVisibility}
-                aria-label={isVisible ? "Hide balance" : "Show balance"}
+                aria-label={isVisible ? 'Hide balance' : 'Show balance'}
                 style={{
-                  background: "transparent",
-                  color: "var(--color-hint)"
+                  background: 'transparent',
+                  color: 'var(--color-hint)',
                 }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path
@@ -128,7 +115,7 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
             </button>
             <div className="w-5 h-5 flex justify-center items-center">
               <img
-                src="/arrow-down-01.png"
+                src={arrowDownIcon}
                 alt="Dropdown arrow"
                 className="w-4 h-4 opacity-60"
               />
@@ -146,7 +133,7 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
                   className="fixed right-2 sm:right-4 top-20 z-50 w-[calc(100vw-1rem)] sm:w-96 max-w-96 max-h-[75vh] p-4 bg-neutral-900 rounded-2xl outline outline-1 outline-offset-[-1px] outline-zinc-800 overflow-hidden"
                   style={{
                     boxShadow:
-                      "0px -23px 51px rgba(0,0,0,0.10), 0px -93px 93px rgba(0,0,0,0.09), 0px -210px 126px rgba(0,0,0,0.05), 0px -374px 149px rgba(0,0,0,0.01), 0px -584px 163px rgba(0,0,0,0.00)"
+                      '0px -23px 51px rgba(0,0,0,0.10), 0px -93px 93px rgba(0,0,0,0.09), 0px -210px 126px rgba(0,0,0,0.05), 0px -374px 149px rgba(0,0,0,0.01), 0px -584px 163px rgba(0,0,0,0.00)',
                   }}>
                   <div className="self-stretch flex flex-col gap-4">
                     <div className="self-stretch inline-flex justify-between items-start">
@@ -162,7 +149,7 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
                     </div>
                     <div
                       className="self-stretch flex flex-col overflow-y-auto pr-1"
-                      style={{ maxHeight: "60vh" }}>
+                      style={{ maxHeight: '60vh' }}>
                       {currencies.map((code) => (
                         <button
                           key={code}
@@ -180,12 +167,12 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
                                 {code}
                               </div>
                               <div className="text-neutral-400 text-sm font-medium leading-tight">
-                                {FIAT_META[code]?.label ?? ""}
+                                {FIAT_META[code]?.label ?? ''}
                               </div>
                             </div>
                           </div>
                           <div className="text-neutral-400 text-base font-semibold leading-snug ml-2 min-w-[1.5rem] text-right">
-                            {FIAT_SYMBOLS[code] ?? ""}
+                            {FIAT_SYMBOLS[code] ?? ''}
                           </div>
                         </button>
                       ))}
@@ -200,23 +187,23 @@ export const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
         <div className="self-stretch flex flex-wrap gap-2 justify-center sm:justify-between items-center">
           {[
             {
-              key: "send",
-              label: "Send",
-              icon: "/arrow-send.png",
-              onClick: onSend
+              key: 'send',
+              label: 'Send',
+              icon: arrowSend,
+              onClick: onSend,
             },
             {
-              key: "receive",
-              label: "Receive",
-              icon: "/arrow-receive.png",
-              onClick: onReceive
+              key: 'receive',
+              label: 'Receive',
+              icon: arrowReceive,
+              onClick: onReceive,
             },
             {
-              key: "history",
-              label: "History",
-              icon: "/transaction-history.png",
-              onClick: onHistory
-            }
+              key: 'history',
+              label: 'History',
+              icon: transactionHistory,
+              onClick: onHistory,
+            },
           ].map((btn) => (
             <button
               key={btn.key}
