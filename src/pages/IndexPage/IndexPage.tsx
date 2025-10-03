@@ -346,7 +346,9 @@ export const IndexPage: FC = () => {
         <div className="px-3 sm:px-5 pb-28">
           <div className="flex items-center justify-between">
             <WalletHeader
-              user={walletData.user}
+              onClickCreateWallet={() => {
+                navigate('/settings/wallets')
+              }}
               onNotificationClick={handleNotificationClick}
               notificationCount={unseenCount}
             />

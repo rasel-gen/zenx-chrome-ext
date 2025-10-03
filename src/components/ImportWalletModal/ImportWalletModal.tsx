@@ -8,8 +8,8 @@
  * - Maintains consistent design with app's modal patterns
  */
 
-import { useWalletStore } from "@/stores/wallet"
-import React, { useState } from "react"
+import { useWalletStore } from '@/stores/wallet'
+import React, { useState } from 'react'
 
 interface ImportWalletModalProps {
   isOpen: boolean
@@ -18,10 +18,10 @@ interface ImportWalletModalProps {
 
 export const ImportWalletModal: React.FC<ImportWalletModalProps> = ({
   isOpen,
-  onClose
+  onClose,
 }) => {
-  const [label, setLabel] = useState("")
-  const [mnemonic, setMnemonic] = useState("")
+  const [label, setLabel] = useState('')
+  const [mnemonic, setMnemonic] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleImport = async () => {
@@ -31,11 +31,11 @@ export const ImportWalletModal: React.FC<ImportWalletModalProps> = ({
       await useWalletStore
         .getState()
         .importKeyring(label.trim(), mnemonic.trim())
-      setLabel("")
-      setMnemonic("")
+      setLabel('')
+      setMnemonic('')
       onClose()
     } catch {
-      alert("Failed to import wallet")
+      alert('Failed to import wallet')
     } finally {
       setLoading(false)
     }
@@ -43,8 +43,8 @@ export const ImportWalletModal: React.FC<ImportWalletModalProps> = ({
 
   const handleClose = () => {
     if (loading) return
-    setLabel("")
-    setMnemonic("")
+    setLabel('')
+    setMnemonic('')
     onClose()
   }
 
@@ -52,8 +52,8 @@ export const ImportWalletModal: React.FC<ImportWalletModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-zinc-950 rounded-2xl border border-[#25282F] p-6 shadow-2xl">
-        <div className="flex flex-col gap-6">
+      <div className="w-full bg-zinc-950 rounded-2xl border border-[#25282F] p-6 shadow-2xl">
+        <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h2 className="text-[#F0F3F7] text-xl font-bold font-['Manrope']">
               Import Wallet
@@ -143,7 +143,7 @@ export const ImportWalletModal: React.FC<ImportWalletModalProps> = ({
                   Importing...
                 </>
               ) : (
-                "Import Wallet"
+                'Import Wallet'
               )}
             </button>
           </div>

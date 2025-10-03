@@ -1,5 +1,4 @@
 import { CurrencyBadge } from '@/components/CurrencyBadge/CurrencyBadge'
-import { Page } from '@/components/Page'
 // Biometry removed in favor of passcode
 import { PasscodePromptModal } from '@/components/PasscodePromptModal/PasscodePromptModal'
 import { SeedPhraseModal } from '@/components/SeedPhraseModal/SeedPhraseModal'
@@ -63,7 +62,7 @@ export const SettingsPage: React.FC = () => {
   // Biometry settings removed
 
   return (
-    <Page back onBack={() => navigate('/dashboard')}>
+    <>
       <div className="min-h-screen relative bg-zinc-950 overflow-hidden">
         {/* Blue glows */}
         <div className="pointer-events-none fixed right-6 top-10 w-20 h-72 rotate-[-36.73deg] blur-3xl bg-blue-500 opacity-90" />
@@ -641,6 +640,6 @@ export const SettingsPage: React.FC = () => {
           }}
         />
       )}
-    </Page>
+    </>
   )
 }
