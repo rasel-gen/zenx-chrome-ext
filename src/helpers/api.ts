@@ -1,4 +1,91 @@
+import { SecureStorage } from '@plasmohq/storage/secure'
+
 const API_BASE = process.env.PLASMO_PUBLIC_API_BASE || '/'
+
+function getOrCreateBrowserId(): string {
+  try {
+    const key = 'zenx_browser_id'
+    const existing = localStorage.getItem(key)
+    if (existing && existing.length > 10) return existing
+    // RFC4122 v4-like simple generator
+    const rnd = (n = 16) => Array.from(crypto.getRandomValues(new Uint8Array(n))).map((b) => b.toString(16).padStart(2, '0')).join('')
+    const uuid = `${rnd(4)}-${rnd(2)}-${rnd(2)}-${rnd(2)}-${rnd(6)}`
+    localStorage.setItem(key, uuid)
+    return uuid
+  } catch {
+    // Fallback if storage or crypto unavailable
+    return String(Math.random()).slice(2)
+  }
+}
+
+// Secure storage for client secret (encrypted-at-rest by Plasmo)
+const secureStorage = new SecureStorage()
+let secureInit: Promise<void> | null = null
+
+async function initSecurePassword(): Promise<void> {
+  if (!secureInit) {
+    secureInit = (async () => {
+      // Derive a stable password from the browser id to avoid persisting plaintext
+      const browserId = getOrCreateBrowserId()
+      const enc = new TextEncoder()
+      const salt = 'zenx-wallet-secure:v1'
+      const data = enc.encode(`${salt}:${browserId}`)
+      const digest = await crypto.subtle.digest('SHA-256', data)
+      const hex = Array.from(new Uint8Array(digest))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('')
+      try {
+        await secureStorage.setPassword(hex)
+      } catch {}
+    })()
+  }
+  return secureInit
+}
+
+async function getOrCreateSecret(): Promise<string> {
+  await initSecurePassword()
+  const key = 'zenx_browser_secret'
+  try {
+    const existing = await secureStorage.get(key)
+    if (typeof existing === 'string' && existing.length >= 64) {
+      return existing
+    }
+  } catch {}
+  const bytes = crypto.getRandomValues(new Uint8Array(32))
+  const secret = Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+  try {
+    await secureStorage.set(key, secret)
+  } catch {}
+  return secret
+}
+
+async function ensureBrowserRegistered(): Promise<void> {
+  try {
+    const secret = await getOrCreateSecret()
+    await fetch(`${API_BASE}/api/v1/browser/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ browserId: getOrCreateBrowserId(), secret })
+    }).catch(() => void 0)
+  } catch {}
+}
+
+async function buildHmacHeaders(method: string, urlPath: string, body: any): Promise<Record<string, string>> {
+  const ts = Math.floor(Date.now() / 1000).toString()
+  const payload = method.toUpperCase() + '\n' + urlPath + '\n' + ts + '\n' + (body ? JSON.stringify(body) : '')
+  // Ensure secret exists in secure storage
+  const secret = await getOrCreateSecret()
+  const keyBytes = new Uint8Array((secret || '').match(/.{1,2}/g)!.map((h) => parseInt(h, 16)))
+  const enc = new TextEncoder()
+  const cryptoKey = await crypto.subtle.importKey('raw', keyBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
+  const sigBuf = await crypto.subtle.sign('HMAC', cryptoKey, enc.encode(payload))
+  const sig = Array.from(new Uint8Array(sigBuf)).map((b) => b.toString(16).padStart(2, '0')).join('')
+  return {
+    'X-Browser-Id': getOrCreateBrowserId(),
+    'X-Client-Timestamp': ts,
+    'X-Client-Signature': sig
+  }
+}
 
 const DUMMY_TG_DATA =
   'auth_date=1757926370&hash=some-hash&signature=some-signature&user=%7B%22first_name%22%3A%22Vladislav%22%2C%22id%22%3A1%7D'
@@ -50,10 +137,15 @@ function getLaunchData(): string {
 }
 
 export async function apiGet<T>(path: string): Promise<T> {
+  await ensureBrowserRegistered()
+  const auth = await buildHmacHeaders('GET', path, undefined)
+  const headers = {
+    'Content-Type': 'application/json',
+    ...auth,
+  } as Record<string, string>
   const res = await fetch(`${API_BASE}${path}`, {
     headers: {
-      'Content-Type': 'application/json',
-      'Telegram-Launch-Data': DUMMY_TG_DATA,
+      ...headers,
     },
     credentials: 'include',
   })
@@ -62,11 +154,16 @@ export async function apiGet<T>(path: string): Promise<T> {
 }
 
 export async function apiPost<T>(path: string, body?: any): Promise<T> {
+  await ensureBrowserRegistered()
+  const auth = await buildHmacHeaders('POST', path, body || undefined)
+  const headers = {
+    'Content-Type': 'application/json',
+    ...auth,
+  } as Record<string, string>
   const res = await fetch(`${API_BASE}${path}`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'Telegram-Launch-Data': DUMMY_TG_DATA,
+      ...headers,
     },
     credentials: 'include',
     body: body ? JSON.stringify(body) : undefined,

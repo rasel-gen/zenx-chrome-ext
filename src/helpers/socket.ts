@@ -2,6 +2,23 @@ import { io, Socket } from "socket.io-client"
 
 const WS_BASE = process.env.PLASMO_PUBLIC_API_BASE || "/"
 
+function getOrCreateBrowserId(): string {
+  try {
+    const key = "zenx_browser_id"
+    const existing = localStorage.getItem(key)
+    if (existing && existing.length > 10) return existing
+    const rnd = (n = 16) =>
+      Array.from(crypto.getRandomValues(new Uint8Array(n)))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("")
+    const uuid = `${rnd(4)}-${rnd(2)}-${rnd(2)}-${rnd(2)}-${rnd(6)}`
+    localStorage.setItem(key, uuid)
+    return uuid
+  } catch {
+    return String(Math.random()).slice(2)
+  }
+}
+
 function getLaunchData(): string {
   try {
     const lp = {}
@@ -48,6 +65,6 @@ function getLaunchData(): string {
 export function createSocket(): Socket {
   return io(WS_BASE, {
     transports: ["websocket"],
-    auth: { telegramLaunchData: getLaunchData() }
+    auth: { browserId: getOrCreateBrowserId() },
   })
 }
