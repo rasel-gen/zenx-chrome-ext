@@ -1,6 +1,6 @@
 // @ts-ignore
 import videoData from 'data-url:~/assets/public/splash.mp4'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface SplashProps {
   onDone: () => void
@@ -8,6 +8,8 @@ interface SplashProps {
 }
 
 export const Splash: React.FC<SplashProps> = ({ onDone, timeoutMs = 1500 }) => {
+  const [hasEnded, sethasEnded] = useState(false)
+
   useEffect(() => {
     const t = setTimeout(onDone, timeoutMs)
     return () => clearTimeout(t)
@@ -21,8 +23,20 @@ export const Splash: React.FC<SplashProps> = ({ onDone, timeoutMs = 1500 }) => {
         autoPlay
         muted
         playsInline
-        loop
+        onEnded={() => sethasEnded(true)}
+        // loop
       />
+
+      {/* typing loading indicator animation */}
+      {hasEnded && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center justify-center">
+          <div className="flex items-end gap-2">
+            <span className="block w-2 h-2 rounded-full bg-[#EBEFF0] dot-bounce"></span>
+            <span className="block w-2 h-2 rounded-full bg-[#EBEFF0] dot-bounce dot-delay-500"></span>
+            <span className="block w-2 h-2 rounded-full bg-[#EBEFF0] dot-bounce dot-delay-1000"></span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

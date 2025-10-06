@@ -86,3 +86,26 @@ body {
 }
 
 /* Splash screen styles - loading dots use Tailwind's animate-bounce */
+
+@keyframes dot-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  16.66% {
+    transform: translateY(-10px);
+  } /* up for ~250ms in a 1.5s cycle */
+  33.33% {
+    transform: translateY(0);
+  } /* down for ~250ms */
+  /* remaining time is the "wait" to stagger like the RN example */
+}
+.dot-bounce {
+  animation: dot-bounce 1.5s ease-in-out infinite;
+}
+.dot-delay-500 {
+  animation-delay: 0.5s;
+}
+.dot-delay-1000 {
+  animation-delay: 1s;
+}
