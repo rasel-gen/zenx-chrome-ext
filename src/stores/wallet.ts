@@ -421,8 +421,8 @@ import { SecureStorage } from '@plasmohq/storage/secure'
 
 const secureStorage = new SecureStorage()
 
-type WalletItem = { chain: string; address: string; balance: number }
-type KeyringItem = { id: string; label: string; createdAt: string }
+export type WalletItem = { chain: string; address: string; balance: number }
+export type KeyringItem = { id: string; label: string; createdAt: string }
 
 type WalletState = {
   wallets: WalletItem[]

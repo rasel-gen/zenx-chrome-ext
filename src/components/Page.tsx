@@ -1,10 +1,10 @@
-import { useEffect, type PropsWithChildren } from "react"
-import { useNavigate } from "react-router-dom"
+import { useEffect, type PropsWithChildren } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export function Page({
   children,
   back = true,
-  onBack
+  onBack,
 }: PropsWithChildren<{
   /**
    * True if it is allowed to go back from this page.
@@ -15,19 +15,19 @@ export function Page({
    */
   onBack?: () => void
 }>) {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
-  useEffect(() => {
-    if (back) {
-      return () => {
-        if (onBack) {
-          onBack()
-        } else {
-          navigate(-1)
-        }
-      }
-    }
-  }, [back, onBack])
+  // useEffect(() => {
+  //   if (back) {
+  //     return () => {
+  //       if (onBack) {
+  //         onBack()
+  //       } else {
+  //         navigate(-1)
+  //       }
+  //     }
+  //   }
+  // }, [back, onBack])
 
   return <>{children}</>
 }

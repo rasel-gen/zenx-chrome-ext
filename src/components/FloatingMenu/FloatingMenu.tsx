@@ -41,7 +41,7 @@ export const FloatingMenu: React.FC<FloatingMenuProps> = ({
   )
 
   return (
-    <div className="fixed left-1/2 -translate-x-1/2 bottom-5 z-50">
+    <div className="fixed left-1/2 -translate-x-1/2 bottom-5 z-20">
       <div
         className="p-2.5 inline-flex flex-col items-start gap-2.5 rounded-[50px]"
         style={{
