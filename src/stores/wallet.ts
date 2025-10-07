@@ -576,10 +576,15 @@ export const useWalletStore = create<WalletState>((set, get) => ({
     if (active !== get().activeKeyringId) {
       set({ activeKeyringId: active })
     }
-    const { wallets } = await api
+    // Prefer keyring-scoped wallets; if empty (e.g., backend hasn't attached yet),
+    // fall back to user-scoped wallets so the UI still shows balances.
+    let walletsResp = await api
       .wallets({ keyringId: active })
       .catch(() => ({ wallets: [] as any[] }))
-    const normalized: WalletItem[] = (wallets || []).map((w: any) => ({
+    if (!walletsResp?.wallets || walletsResp.wallets.length === 0) {
+      walletsResp = await api.wallets().catch(() => ({ wallets: [] as any[] }))
+    }
+    const normalized: WalletItem[] = (walletsResp.wallets || []).map((w: any) => ({
       chain: w.chain,
       address: w.address,
       balance: Number(w.balance || 0),
@@ -713,10 +718,13 @@ export const useWalletStore = create<WalletState>((set, get) => ({
   setActiveKeyring: async (id: string) => {
     set({ activeKeyringId: id })
     await api.updatePreferences({ activeKeyringId: id }).catch(() => void 0)
-    const { wallets } = await api
+    let walletsResp = await api
       .wallets({ keyringId: id })
       .catch(() => ({ wallets: [] as any[] }))
-    const normalized: WalletItem[] = (wallets || []).map((w: any) => ({
+    if (!walletsResp?.wallets || walletsResp.wallets.length === 0) {
+      walletsResp = await api.wallets().catch(() => ({ wallets: [] as any[] }))
+    }
+    const normalized: WalletItem[] = (walletsResp.wallets || []).map((w: any) => ({
       chain: w.chain,
       address: w.address,
       balance: Number(w.balance || 0),
